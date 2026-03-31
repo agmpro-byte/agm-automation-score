@@ -1296,6 +1296,11 @@ function renderResults() {
   window._scoreData = { catScores, totalScore, tier, lossLow, lossHigh, ticketAnswer };
 
   const card = document.getElementById('resultsCard');
+
+  // Find weakest pillar for teaser
+  const weakest = categories.map((cat, i) => ({ name: cat.name, score: catScores[i], max: cat.max, pct: Math.round((catScores[i]/cat.max)*100) }))
+    .sort((a, b) => a.pct - b.pct)[0];
+
   card.innerHTML = `
     <div class="score-ring">
       <svg viewBox="0 0 200 200">
@@ -1312,40 +1317,46 @@ function renderResults() {
     </div>
     <p class="tier-desc">${tier.desc}</p>
 
-    <div class="category-breakdown">
-      <h3>Category Breakdown</h3>
-      ${categories.map((cat, i) => {
-        const pct = Math.round((catScores[i] / cat.max) * 100);
-        const barColor = pct >= 75 ? '#22c55e' : pct >= 50 ? '#3b82f6' : pct >= 25 ? '#eab308' : '#ef4444';
-        return `
-          <div class="cat-row">
-            <div class="cat-row-header">
-              <span class="cat-name">${cat.name}</span>
-              <span class="cat-score">${catScores[i]}/${cat.max}</span>
-            </div>
-            <div class="cat-bar-track">
-              <div class="cat-bar-fill" data-width="${pct}" style="background:${barColor}"></div>
-            </div>
-          </div>
-        `;
-      }).join('')}
-    </div>
-
     <div class="revenue-impact">
       <div class="revenue-impact-label">Estimated Monthly Revenue Left on the Table</div>
-      <div class="revenue-impact-value" style="color:${tier.color}">$${lossLow.toLocaleString()} \u2013 $${lossHigh.toLocaleString()}</div>
-      <div class="revenue-impact-note">Based on your answers, gaps in automation, follow-up, and reactivation are likely costing you this range every month in lost or delayed revenue.</div>
+      <div class="revenue-impact-value" style="color:${tier.color}">$${lossLow.toLocaleString()} \u2013 $${lossHigh.toLocaleString()}/mo</div>
+    </div>
+
+    <div style="background:var(--surface-2);border:1px solid var(--border-light);border-radius:12px;padding:24px;margin:24px 0;text-align:left;">
+      <h3 style="color:#fff;font-size:17px;margin-bottom:16px;">Your 6-page report includes:</h3>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <span style="color:#4CAF50;font-size:16px;flex-shrink:0;">&#10003;</span>
+          <span style="color:var(--text-secondary);font-size:14px;line-height:1.5;"><strong style="color:#fff;">Category breakdown</strong> \u2014 where you stand across all 5 pillars</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <span style="color:#4CAF50;font-size:16px;flex-shrink:0;">&#10003;</span>
+          <span style="color:var(--text-secondary);font-size:14px;line-height:1.5;"><strong style="color:#fff;">Gap analysis</strong> \u2014 exactly what each weakness is costing you and why</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <span style="color:#4CAF50;font-size:16px;flex-shrink:0;">&#10003;</span>
+          <span style="color:var(--text-secondary);font-size:14px;line-height:1.5;"><strong style="color:#fff;">What top contractors do differently</strong> \u2014 the specific automations closing your gaps</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <span style="color:#4CAF50;font-size:16px;flex-shrink:0;">&#10003;</span>
+          <span style="color:var(--text-secondary);font-size:14px;line-height:1.5;"><strong style="color:#fff;">90-day ROI projection</strong> \u2014 how much revenue you could recover</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <span style="color:#4CAF50;font-size:16px;flex-shrink:0;">&#10003;</span>
+          <span style="color:var(--text-secondary);font-size:14px;line-height:1.5;"><strong style="color:#fff;">Your automation roadmap</strong> \u2014 3 steps to start, prioritized for your business</span>
+        </div>
+      </div>
     </div>
 
     <div class="results-ctas">
-      <a href="https://agmprotools.com" target="_blank" class="btn-primary" style="width:100%;max-width:400px;">
-        Book a Free Strategy Call
+      <button class="btn-primary" style="width:100%;max-width:400px;" onclick="openFullReport()">
+        View Your Full Report
         <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
-      </a>
-      <button class="btn-secondary" style="width:100%;max-width:400px;" onclick="openFullReport()">
-        View Your Detailed Report
       </button>
-      <div class="results-email-note">Full report also emailed to <strong>${userData.email || ''}</strong></div>
+      <div class="results-email-note">A PDF copy has also been emailed to <strong>${userData.email || ''}</strong></div>
+      <a href="https://agmprotools.com" target="_blank" class="btn-secondary" style="width:100%;max-width:400px;margin-top:8px;">
+        Book a Free Strategy Call
+      </a>
     </div>
   `;
 
@@ -1623,6 +1634,7 @@ h1{font-size:2.4rem;font-weight:700;letter-spacing:-0.02em;line-height:1.15;colo
     <p>Book a free strategy call with our team. We'll walk through this report together and build a custom automation plan for your business.</p>
     <a href="https://agmprotools.com" class="cta-link">Book Your Free Strategy Call</a>
     <p class="text-xs mt-2" style="margin-bottom:0;color:var(--text-dim);">No obligation. 30 minutes. Tailored to your operation.</p>
+    <p class="text-xs mt-2" style="margin-bottom:0;color:var(--text-dim);">A PDF copy of this report has also been sent to <strong style="color:var(--text-muted);">${userData.email || 'your email'}</strong>.</p>
   </div>
   ${pageFooter(6)}
 </div>

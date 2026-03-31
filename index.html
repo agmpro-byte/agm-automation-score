@@ -481,10 +481,18 @@ function submitQuiz() {
         biggest_headache: document.getElementById('biggestHeadache').value.trim()
     };
 
-    // Calculate score
+    // Calculate score client-side (instant results)
     setTimeout(() => {
         const result = calculateScore(answers);
         showResults(result, contact, intake);
+
+        // Fire backend POST in background (AGM lead + email report + sheet + Slack)
+        const SCORE_API = 'https://agm-pro--agm-automation-score-score-app.modal.run/score';
+        fetch(SCORE_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contact, answers, intake })
+        }).catch(() => {}); // Silent — results already shown
     }, 800);
 }
 

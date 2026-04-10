@@ -194,6 +194,13 @@ body {
   visibility: hidden;
 }
 
+/* Hero section grows with content rather than centering */
+#heroSection.active {
+  align-items: flex-start;
+  padding-top: 120px;
+  padding-bottom: 80px;
+}
+
 /* ─── Hero ─── */
 .hero-eyebrow {
   display: inline-flex;
@@ -783,12 +790,131 @@ body {
 .stagger-3 { animation-delay: 0.3s; opacity: 0; }
 .stagger-4 { animation-delay: 0.4s; opacity: 0; }
 
+/* ─── Hero Badge (new) ─── */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-light);
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+}
+
+.hero-badge .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+.hero-badge strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* ─── Hero Trust Row (under CTA) ─── */
+.hero-trust {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.hero-trust-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hero-trust-item svg {
+  width: 14px;
+  height: 14px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ─── What You'll Get (below hero) ─── */
+.hero-aside {
+  margin-top: 72px;
+  padding: 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.hero-aside-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.hero-aside-heading {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+  line-height: 1.3;
+}
+
+.hero-aside-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px;
+}
+
+.hero-aside-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.hero-aside-item svg {
+  width: 18px;
+  height: 18px;
+  color: var(--accent);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.hero-aside-footnote {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.hero-aside-footnote strong {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
 /* ─── Responsive ─── */
 @media (max-width: 600px) {
   .hero-stats { gap: 20px; }
   .select-grid { grid-template-columns: 1fr 1fr; }
   .quiz-nav { flex-wrap: wrap; }
   .quiz-nav .btn-primary { max-width: none; flex: 1; }
+  .hero-aside { padding: 24px 20px; margin-top: 48px; }
+  .hero-aside-grid { grid-template-columns: 1fr; }
+  .hero-trust { gap: 12px; font-size: 12px; }
 }
 </style>
 </head>
@@ -797,8 +923,8 @@ body {
 <!-- Header -->
 <header class="header">
   <div class="container">
-    <div class="logo">AGM <span>Pro Tools</span></div>
-    <div class="header-badge">Free Assessment</div>
+    <a href="https://agmprotools.com" class="logo" style="text-decoration:none;">AGM <span>Pro Tools</span></a>
+    <div class="header-badge">Free Diagnostic</div>
   </div>
 </header>
 
@@ -816,9 +942,13 @@ body {
 <!-- ===== HERO ===== -->
 <section class="section active" id="heroSection">
   <div class="container">
+    <div class="hero-badge animate-in stagger-1">
+      <span class="dot"></span>
+      A free diagnostic from <strong>AGM Pro Tools</strong> — the operating system for field service businesses
+    </div>
     <div class="hero-eyebrow animate-in stagger-1">Contractor Automation Score</div>
-    <h1 class="animate-in stagger-2">Is Your Contracting Business<br><em>Leaving Money on the Table?</em></h1>
-    <p class="hero-sub animate-in stagger-3">Take the free 2-minute Contractor Automation Score and find out. No fluff, no sales pitch up front — just an honest diagnostic of the five systems that separate scaling contractors from struggling ones.</p>
+    <h1 class="animate-in stagger-2">Find Out How Much Revenue Your<br><em>Manual Process Is Costing You.</em></h1>
+    <p class="hero-sub animate-in stagger-3">Take the free 2-minute assessment and get an honest diagnostic of the five systems that separate scaling contractors from struggling ones — lead response, quote follow-up, review generation, reactivation, and reporting. Built by the team that runs AGM Pro Tools for contractors across turf, pest, and field service.</p>
     <div class="hero-stats animate-in stagger-3">
       <div class="hero-stat">
         <span class="hero-stat-num">2 min</span>
@@ -830,13 +960,54 @@ body {
       </div>
       <div class="hero-stat">
         <span class="hero-stat-num">Free</span>
-        <span class="hero-stat-label">Always</span>
+        <span class="hero-stat-label">No credit card</span>
       </div>
     </div>
     <button class="btn-primary animate-in stagger-4" onclick="startQuiz()">
       Get My Score
       <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
     </button>
+    <div class="hero-trust animate-in stagger-4">
+      <div class="hero-trust-item">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        No sales pitch
+      </div>
+      <div class="hero-trust-item">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        Personalized report
+      </div>
+      <div class="hero-trust-item">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        Your data stays private
+      </div>
+    </div>
+
+    <!-- What you get -->
+    <div class="hero-aside animate-in stagger-4">
+      <div class="hero-aside-title">What you'll get</div>
+      <div class="hero-aside-heading">A personalized breakdown of where your business is leaking money — and exactly what to fix first.</div>
+      <div class="hero-aside-grid">
+        <div class="hero-aside-item">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <div>A <strong style="color:var(--text)">0–100 automation score</strong> benchmarked against other contractors</div>
+        </div>
+        <div class="hero-aside-item">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <div>A <strong style="color:var(--text)">revenue leak estimate</strong> in real dollars you're losing each month</div>
+        </div>
+        <div class="hero-aside-item">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <div>The <strong style="color:var(--text)">#1 system to fix first</strong> — ranked by revenue impact, not effort</div>
+        </div>
+        <div class="hero-aside-item">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <div>A <strong style="color:var(--text)">full HTML + PDF report</strong> delivered to your inbox in under a minute</div>
+        </div>
+      </div>
+      <p class="hero-aside-footnote">
+        <strong>Who is AGM Pro Tools?</strong> We build automation systems for contractors — real-time FSM sync (Jobber, Field Routes, Housecall Pro), lead nurture, quote follow-up, and review workflows. This diagnostic is the same framework we use with our live clients. Take it for yourself. No strings.
+      </p>
+    </div>
   </div>
 </section>
 

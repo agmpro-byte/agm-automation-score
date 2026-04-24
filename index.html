@@ -1493,7 +1493,11 @@ function submitEmail(e) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ contact, answers: answerPayload, intake })
-  }).catch(() => {}); // Silent — results already shown client-side
+  }).then(r => r.json()).then(data => {
+    if (data && data.contact_id) {
+      window._agmContactId = data.contact_id;
+    }
+  }).catch(() => {});
 }
 
 function renderResults() {
@@ -1606,8 +1610,27 @@ function renderResults() {
       <a href="https://link.agmpro.com/widget/bookings/pro-tools-strategy-call" target="_blank" class="btn-secondary" style="width:100%;max-width:400px;margin-top:8px;">
         Book a Free Strategy Call
       </a>
+      <a id="launchpadCta" href="#" target="_blank" class="btn-secondary" style="width:100%;max-width:400px;margin-top:8px;background:rgba(34,197,94,0.1);border-color:rgba(34,197,94,0.4);display:none;">
+        Get Started with AGM Pro Tools →
+      </a>
     </div>
   `;
+
+  // Wire Launchpad CTA with pre-filled contact data
+  setTimeout(() => {
+    const lcta = document.getElementById('launchpadCta');
+    if (lcta) {
+      const params = new URLSearchParams({
+        name: userData.name || '',
+        email: userData.email || '',
+        phone: userData.phone || '',
+        company: userData.website || ''
+      });
+      if (window._agmContactId) params.set('agm_contact_id', window._agmContactId);
+      lcta.href = 'https://agmpro-byte.github.io/agm-launchpad/?' + params.toString();
+      lcta.style.display = '';
+    }
+  }, 2000);
 
   // Animate score counter
   animateCounter(document.getElementById('scoreNum'), totalScore, tier.color);
@@ -1929,7 +1952,7 @@ h1{font-size:2.4rem;font-weight:700;letter-spacing:-0.02em;line-height:1.15;colo
   <div class="cta-box">
     <h3 style="color:#fff;">Ready to Close These Gaps?</h3>
     <p style="color:rgba(255,255,255,0.9);">AGM Pro Tools automates the exact gaps this report identified \u2014 lead response, quote follow-up, review requests, pipeline visibility, and reactivation. Live in under 10 minutes.</p>
-    <a href="#" onclick="window.opener && window.opener.origin === location.origin && window.opener.startLaunchpadCheckout ? window.opener.startLaunchpadCheckout() : window.location.href='https://agmprotools.com'" class="cta-link" style="background:#fff;color:#059669;border-radius:8px;padding:14px 32px;text-decoration:none;display:inline-block;font-weight:600;">Get Started with AGM Pro Tools \u2014 $297/mo</a>
+    <a href="${(() => { const p = new URLSearchParams({name: userData.name||'', email: userData.email||'', phone: userData.phone||'', company: userData.website||''}); if (window._agmContactId) p.set('agm_contact_id', window._agmContactId); return 'https://agmpro-byte.github.io/agm-launchpad/?' + p.toString(); })()" class="cta-link" style="background:#fff;color:#059669;border-radius:8px;padding:14px 32px;text-decoration:none;display:inline-block;font-weight:600;">Get Started with AGM Pro Tools \u2014 $297/mo</a>
     <p class="text-xs mt-2" style="margin-bottom:8px;color:rgba(255,255,255,0.7);">Cancel anytime \u00b7 No setup fee \u00b7 Includes Jobber integration</p>
     <a href="https://link.agmpro.com/widget/bookings/pro-tools-strategy-call" class="cta-link" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.4);border-radius:8px;padding:12px 28px;text-decoration:none;display:inline-block;font-weight:500;font-size:14px;">Or Book a Free Strategy Call First</a>
     <p class="text-xs mt-2" style="margin-bottom:0;color:rgba(255,255,255,0.5);">A PDF copy of this report has also been sent to <strong style="color:rgba(255,255,255,0.7);">${userData.email || 'your email'}</strong>.</p>

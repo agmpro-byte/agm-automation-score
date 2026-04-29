@@ -905,6 +905,53 @@ body {
   font-weight: 600;
 }
 
+/* ─── Section Transitions ─── */
+.section-transition {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  padding: 16px 20px;
+  background: var(--surface-2);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 20px;
+}
+
+.quiz-intro {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+/* ─── Loading Animation ─── */
+.loading-step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.loading-step.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.loading-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: transparent;
+  flex-shrink: 0;
+  transition: background 0.3s;
+}
+.loading-step.visible .loading-dot {
+  background: var(--accent);
+}
+
 /* ─── Responsive ─── */
 @media (max-width: 600px) {
   .hero-stats { gap: 20px; }
@@ -930,7 +977,7 @@ body {
 <!-- Progress -->
 <div class="progress-wrap" id="progressWrap">
   <div class="progress-info">
-    <span class="progress-step" id="progressStep">Question 1 of 13</span>
+    <span class="progress-step" id="progressStep">Question 1 of 20</span>
     <span class="progress-pct" id="progressPct">0%</span>
   </div>
   <div class="progress-bar-track">
@@ -946,15 +993,15 @@ body {
       A free diagnostic from <strong>AGM Pro Tools</strong> — the operating system for field service businesses
     </div>
     <div class="hero-eyebrow animate-in stagger-1">Contractor Automation Score</div>
-    <h1 class="animate-in stagger-2">Are You Winning the Jobs<br><em>You Quote?</em></h1>
-    <p class="hero-sub animate-in stagger-3">Find out where you stand against contractors who've already automated. Take the free 2-minute assessment and get an honest diagnostic of the five systems that separate the contractors winning every bid from the ones watching jobs walk out the door.</p>
+    <h1 class="animate-in stagger-2">We're About to Show You Exactly<br><em>Where You're Leaking Revenue</em></h1>
+    <p class="hero-sub animate-in stagger-3">Not a generic report. Not a tool recommendation. Your actual numbers — how many hours you're losing every week, what it's costing you annually, and exactly what to fix first. No charge. No sales call. Just your diagnostic.</p>
     <div class="hero-stats animate-in stagger-3">
       <div class="hero-stat">
-        <span class="hero-stat-num">2 min</span>
+        <span class="hero-stat-num">3 min</span>
         <span class="hero-stat-label">To complete</span>
       </div>
       <div class="hero-stat">
-        <span class="hero-stat-num">13</span>
+        <span class="hero-stat-num">20</span>
         <span class="hero-stat-label">Questions</span>
       </div>
       <div class="hero-stat">
@@ -963,7 +1010,7 @@ body {
       </div>
     </div>
     <button class="btn-primary animate-in stagger-4" onclick="startQuiz()">
-      Get My Score
+      Start My Assessment
       <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
     </button>
     <div class="hero-trust animate-in stagger-4">
@@ -1023,8 +1070,9 @@ body {
 <section class="section" id="emailSection">
   <div class="container">
     <div class="quiz-card">
-      <div class="quiz-category">Almost There</div>
-      <div class="quiz-question">Where should we send your detailed report?</div>
+      <div class="quiz-category">Last Step</div>
+      <div class="quiz-question">Where should we send your personalized diagnostic?</div>
+      <p style="color:var(--text-muted);font-size:14px;margin:-8px 0 20px;line-height:1.6;">Your report includes your priority roadmap, revenue impact analysis, and a personalized audio walkthrough of your results. We'll have it ready in about 10 seconds.</p>
       <form id="emailForm" onsubmit="submitEmail(event)">
         <div class="form-group">
           <label class="form-label" for="userName">Full Name</label>
@@ -1035,8 +1083,8 @@ body {
           <input class="form-input" type="email" id="userEmail" placeholder="john@company.com" required>
         </div>
         <div class="form-group">
-          <label class="form-label" for="userCompany">Company Website</label>
-          <input class="form-input" type="text" id="userCompany" placeholder="smithcontracting.com">
+          <label class="form-label" for="userPhone">Phone <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+          <input class="form-input" type="tel" id="userPhone" placeholder="(555) 123-4567">
         </div>
         <div class="quiz-nav">
           <button type="button" class="btn-back" onclick="goBack()">
@@ -1048,8 +1096,30 @@ body {
             <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
           </button>
         </div>
-        <p class="form-note">We'll send a personalized breakdown with specific recommendations. No spam — just the report.</p>
+        <p class="form-note">No spam — just your diagnostic report. Unsubscribe anytime.</p>
       </form>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LOADING ANIMATION ===== -->
+<section class="section" id="loadingSection">
+  <div class="container">
+    <div class="quiz-card" style="text-align:left;padding:48px 32px;">
+      <div id="loadingSteps">
+        <div class="loading-step" id="loadStep1">
+          <div class="loading-dot"></div>
+          <span style="color:var(--text-secondary);font-size:16px;">Analyzing your responses...</span>
+        </div>
+        <div class="loading-step" id="loadStep2">
+          <div class="loading-dot"></div>
+          <span style="color:var(--text-secondary);font-size:16px;">Building your personalized diagnostic...</span>
+        </div>
+        <div class="loading-step" id="loadStep3">
+          <div class="loading-dot"></div>
+          <span style="color:#fff;font-size:18px;font-weight:600;">Here's what we found.</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1117,11 +1187,22 @@ body {
 // DATA
 // ─────────────────────────────
 
+// Section transitions \u2014 shown before the first question of each pillar
+const sectionTransitions = {
+  "Speed to Lead": "Let\u2019s start with the moment a lead first reaches out. This is where most jobs are won or lost \u2014 before your team even knows about it.",
+  "Quote Follow-Up": "Good. Now let\u2019s look at what happens after the quote goes out. This is where most contractors quietly lose the jobs they already earned.",
+  "Review Generation": "Next \u2014 your online reputation. This is the first thing every homeowner sees before they ever call you.",
+  "Pipeline Visibility": "Now the big picture. Can you actually see what\u2019s happening across your entire pipeline \u2014 or are you flying blind?",
+  "Customer Reactivation": "Last scored section. The customers you\u2019ve already won \u2014 are they hearing from you, or are they hearing from your competitors?",
+  "_quantitative": "Almost done. These last few questions help us calculate the actual dollar impact \u2014 the more specific you are, the more useful your report becomes."
+};
+
 const scoredQuestions = [
+  // \u2500\u2500 SPEED TO LEAD \u2500\u2500
   {
     category: "Speed to Lead",
     catIndex: 0,
-    question: "How quickly does a new lead get a response from your team?",
+    question: "Think about last week. A new lead comes in \u2014 someone fills out your website form or calls the office. How long before they actually hear back from a real person?",
     options: [
       { text: "Under 5 minutes", value: 20 },
       { text: "5\u201330 minutes", value: 15 },
@@ -1130,10 +1211,11 @@ const scoredQuestions = [
       { text: "Next day or later", value: 0 }
     ]
   },
+  // \u2500\u2500 QUOTE FOLLOW-UP \u2500\u2500
   {
     category: "Quote Follow-Up",
     catIndex: 1,
-    question: "After sending a quote, how do you follow up?",
+    question: "A quote goes out on Monday. The homeowner says \u2018let me think about it.\u2019 What happens on Tuesday? Wednesday? The week after?",
     options: [
       { text: "Automated sequence within 24 hours", value: 10 },
       { text: "Manual call within 48 hours", value: 6 },
@@ -1144,7 +1226,7 @@ const scoredQuestions = [
   {
     category: "Quote Follow-Up",
     catIndex: 1,
-    question: "If a quote you sent last week hasn\u2019t gotten a response, what happens next?",
+    question: "Be honest \u2014 that quote you sent last Wednesday that never got a response. What actually happened next?",
     options: [
       { text: "An automated follow-up sequence is already running", value: 10 },
       { text: "Someone on the team will probably call them", value: 7 },
@@ -1152,10 +1234,11 @@ const scoredQuestions = [
       { text: "Nothing \u2014 we move on to the next job", value: 0 }
     ]
   },
+  // \u2500\u2500 REVIEW GENERATION \u2500\u2500
   {
     category: "Review Generation",
     catIndex: 2,
-    question: "How do you request reviews after a completed job?",
+    question: "The crew just finished a job. The homeowner\u2019s thrilled \u2014 they\u2019re walking the yard, smiling, shaking hands. What happens next to turn that moment into a Google review?",
     options: [
       { text: "Automated SMS/email within 24 hours", value: 10 },
       { text: "A rep sends the request manually", value: 6 },
@@ -1166,7 +1249,7 @@ const scoredQuestions = [
   {
     category: "Review Generation",
     catIndex: 2,
-    question: "If a homeowner Googles your company right now, what would they see?",
+    question: "Pull out your phone and Google your company name. What does a homeowner see?",
     options: [
       { text: "100+ reviews, 4.5+ stars, recent activity", value: 10 },
       { text: "Decent reviews but not many recent ones", value: 6 },
@@ -1174,10 +1257,11 @@ const scoredQuestions = [
       { text: "I\u2019m not sure \u2014 I haven\u2019t checked lately", value: 0 }
     ]
   },
+  // \u2500\u2500 PIPELINE VISIBILITY \u2500\u2500
   {
     category: "Pipeline Visibility",
     catIndex: 3,
-    question: "Can you see all open quotes and their status in one place?",
+    question: "Right now \u2014 without opening any software \u2014 do you know how many open quotes are sitting out there waiting for a yes or no?",
     options: [
       { text: "Yes, real-time dashboard", value: 10 },
       { text: "Yes, but across multiple systems", value: 6 },
@@ -1196,10 +1280,11 @@ const scoredQuestions = [
       { text: "No \u2014 I have no idea", value: 0 }
     ]
   },
+  // \u2500\u2500 CUSTOMER REACTIVATION \u2500\u2500
   {
     category: "Customer Reactivation",
     catIndex: 4,
-    question: "What happens when someone calls your business after hours or on weekends?",
+    question: "It\u2019s 6:30 on a Friday. Someone calls your office number about a project they want done before summer. What do they hear?",
     options: [
       { text: "Automated text-back and voicemail capture within 60 seconds", value: 10 },
       { text: "They get a voicemail and we call back next business day", value: 5 },
@@ -1210,7 +1295,7 @@ const scoredQuestions = [
   {
     category: "Customer Reactivation",
     catIndex: 4,
-    question: "When was the last time a past customer heard from your business?",
+    question: "Think about someone you did a great job for a year ago. They loved the work. Have they heard from you since?",
     options: [
       { text: "We reach out automatically based on their service date", value: 10 },
       { text: "We send something out a few times a year", value: 5 },
@@ -1221,10 +1306,36 @@ const scoredQuestions = [
 ];
 
 const bonusQuestions = [
+  // \u2500\u2500 QUANTITATIVE (new \u2014 captures dashboard metrics) \u2500\u2500
+  {
+    question: "Roughly how many new leads or inquiries come into your business each month?",
+    intro: "This helps us estimate how many leads may be going to your competitors before your team responds.",
+    type: "select",
+    options: ["Under 10", "10\u201325", "25\u201350", "50\u2013100", "100+"]
+  },
+  {
+    question: "In a typical month, roughly how many quotes or estimates does your team send out?",
+    intro: "This tells us how much revenue is sitting in unworked quotes right now.",
+    type: "select",
+    options: ["Under 10", "10\u201325", "25\u201350", "50\u2013100", "100+"]
+  },
+  {
+    question: "How many jobs does your team complete in a typical month?",
+    intro: "This lets us calculate your review conversion rate \u2014 and how fast we can improve it.",
+    type: "select",
+    options: ["Under 10", "10\u201325", "25\u201350", "50\u2013100", "100+"]
+  },
+  {
+    question: "Roughly how many past customers or clients are in your system?",
+    intro: "This is your cheapest source of new revenue. We\u2019ll show you how much is sitting there.",
+    type: "select",
+    options: ["Under 50", "50\u2013200", "200\u2013500", "500\u20131,000", "1,000+"]
+  },
+  // \u2500\u2500 INTAKE (existing + new) \u2500\u2500
   {
     question: "What software are you using to run your business?",
     type: "select",
-    options: ["Jobber", "Housecall Pro", "ServiceTitan", "GoHighLevel", "HubSpot", "Salesforce", "Spreadsheets / Email", "None", "Other"]
+    options: ["Jobber", "Housecall Pro", "ServiceTitan", "Field Routes", "FieldPulse", "GoHighLevel", "HubSpot", "Salesforce", "Spreadsheets / Email", "None", "Other"]
   },
   {
     question: "How many crews or trucks do you run?",
@@ -1237,13 +1348,24 @@ const bonusQuestions = [
     options: ["Under $500", "$500\u2013$2,000", "$2,000\u2013$5,000", "$5,000\u2013$15,000", "$15,000+"]
   },
   {
-    question: "What\u2019s the one thing slowing your business down right now?",
-    type: "text"
+    question: "Out of every 10 quotes you send, roughly how many turn into a job?",
+    intro: "Even a rough guess works. This is the single most revealing number in your business.",
+    type: "select",
+    options: ["1\u20132", "3\u20134", "5\u20136", "7\u20138", "9\u201310"]
   },
   {
     question: "What type of field service business do you run?",
     type: "select",
-    options: ["Artificial Turf", "Pest Control", "HVAC", "Plumbing", "Landscaping", "Cleaning", "Pool Service", "Handyman", "Electrical", "Other"]
+    options: ["Artificial Turf", "Pest Control", "HVAC", "Plumbing", "Landscaping", "Cleaning", "Pool Service", "Handyman", "Electrical", "Roofing", "Fencing", "Other"]
+  },
+  {
+    question: "What\u2019s the one thing slowing your business down right now?",
+    type: "text"
+  },
+  {
+    question: "What\u2019s your company name or website URL?",
+    intro: "We\u2019ll pull your Google reviews, star rating, and online visibility automatically \u2014 so your report shows real data, not guesses.",
+    type: "text"
   }
 ];
 
@@ -1267,7 +1389,7 @@ const tiers = [
 // STATE
 // ─────────────────────────────
 
-const totalSteps = scoredQuestions.length + bonusQuestions.length; // 13
+const totalSteps = scoredQuestions.length + bonusQuestions.length;
 let currentStep = 0; // 0-indexed across scored + bonus
 let answers = new Array(scoredQuestions.length).fill(null);
 let bonusAnswers = new Array(bonusQuestions.length).fill(null);
@@ -1313,9 +1435,12 @@ function renderStep() {
     // Scored question
     const q = scoredQuestions[currentStep];
     const selectedVal = answers[currentStep];
+    const isFirstOfSection = currentStep === 0 || q.category !== scoredQuestions[currentStep - 1].category;
+    const transitionText = isFirstOfSection ? (sectionTransitions[q.category] || '') : '';
     card.innerHTML = `
       <div class="quiz-number">Question ${currentStep + 1} of ${totalSteps}</div>
       <div class="quiz-category">${q.category}</div>
+      ${transitionText ? `<div class="section-transition">${transitionText}</div>` : ''}
       <div class="quiz-question">${q.question}</div>
       <div class="option-list">
         ${q.options.map((o, i) => `
@@ -1362,9 +1487,12 @@ function renderStep() {
       `;
     }
 
+    const showQuantTransition = bi === 0 && sectionTransitions._quantitative;
     card.innerHTML = `
       <div class="quiz-number">Question ${currentStep + 1} of ${totalSteps}</div>
-      <div class="intake-title">Bonus \u2014 helps us personalize your report</div>
+      <div class="intake-title">Your Business</div>
+      ${showQuantTransition ? `<div class="section-transition">${sectionTransitions._quantitative}</div>` : ''}
+      ${bq.intro ? `<div class="quiz-intro">${bq.intro}</div>` : ''}
       <div class="intake-q">${bq.question}</div>
       ${inputHTML}
       <div class="quiz-nav">
@@ -1445,10 +1573,19 @@ function submitEmail(e) {
   userData = {
     name: document.getElementById('userName').value,
     email: document.getElementById('userEmail').value,
-    website: document.getElementById('userCompany').value
+    phone: document.getElementById('userPhone').value || ''
   };
-  showSection('resultsSection');
-  setTimeout(renderResults, 300);
+
+  // Show loading animation sequence, then reveal results
+  showSection('loadingSection');
+  document.querySelectorAll('.loading-step').forEach(s => s.classList.remove('visible'));
+  setTimeout(() => document.getElementById('loadStep1').classList.add('visible'), 200);
+  setTimeout(() => document.getElementById('loadStep2').classList.add('visible'), 2200);
+  setTimeout(() => document.getElementById('loadStep3').classList.add('visible'), 3200);
+  setTimeout(() => {
+    showSection('resultsSection');
+    setTimeout(renderResults, 300);
+  }, 4200);
 
   // Fire backend POST in background (AGM lead + email report + sheet + Slack)
   const nameParts = userData.name.split(' ');
@@ -1456,8 +1593,8 @@ function submitEmail(e) {
     first_name: nameParts[0] || '',
     last_name: nameParts.slice(1).join(' ') || '',
     email: userData.email,
-    phone: '',
-    company: userData.website
+    phone: userData.phone,
+    company: bonusAnswers[10] || ''
   };
   // Map scored question answers (values) to answer indices for backend
   const keyMap = ['speed_to_lead', 'quote_followup_method', 'quote_followup_touches',
@@ -1475,12 +1612,17 @@ function submitEmail(e) {
   let utm = {};
   try { utm = JSON.parse(sessionStorage.getItem('utm') || '{}'); } catch (e) {}
   const intake = {
-    fsm_platform: (bonusAnswers[0] || '').toLowerCase().replace(/\s+/g, '_'),
-    crew_count: bonusAnswers[1] || '',
-    annual_revenue: bonusAnswers[2] || '',
-    biggest_headache: bonusAnswers[3] || '',
-    avg_ticket_value: bonusAnswers[4] || '',
-    industry: bonusAnswers[5] || '',
+    monthly_leads: bonusAnswers[0] || '',
+    monthly_quotes: bonusAnswers[1] || '',
+    monthly_jobs: bonusAnswers[2] || '',
+    customer_db_size: bonusAnswers[3] || '',
+    fsm_platform: (bonusAnswers[4] || '').toLowerCase().replace(/\s+/g, '_'),
+    crew_count: bonusAnswers[5] || '',
+    avg_ticket_value: bonusAnswers[6] || '',
+    close_rate: bonusAnswers[7] || '',
+    industry: bonusAnswers[8] || '',
+    biggest_headache: bonusAnswers[9] || '',
+    company_url: bonusAnswers[10] || '',
     utm_source: utm.utm_source || '',
     utm_medium: utm.utm_medium || '',
     utm_campaign: utm.utm_campaign || '',
@@ -1511,8 +1653,8 @@ function renderResults() {
   // Tier
   const tier = tiers.find(t => totalScore >= t.min);
 
-  // Revenue impact — scaled by ticket value
-  const ticketAnswer = bonusAnswers[4] || "";
+  // Revenue impact — scaled by ticket value (index 6 = avg_ticket_value after 4 quantitative + fsm + crew)
+  const ticketAnswer = bonusAnswers[6] || "";
   const ticketMultiplier = ticketAnswer.includes("15,000") ? 4.0
     : ticketAnswer.includes("5,000") ? 2.5
     : ticketAnswer.includes("2,000") ? 1.5
@@ -1528,14 +1670,107 @@ function renderResults() {
   const lossLow = Math.max(monthlyLoss, 500);
   const lossHigh = Math.round(lossLow * 2.2);
 
+  // Hours lost per pillar \u2014 matches backend HOURS_LOST_MAP
+  const hoursLostMap = {
+    "Speed to Lead":        { critical: 3.0, weak: 2.0, moderate: 1.0, strong: 0 },
+    "Quote Follow-Up":      { critical: 3.0, weak: 2.0, moderate: 1.0, strong: 0 },
+    "Review Generation":    { critical: 2.0, weak: 1.5, moderate: 0.5, strong: 0 },
+    "Pipeline Visibility":  { critical: 2.0, weak: 1.5, moderate: 0.5, strong: 0 },
+    "Customer Reactivation": { critical: 1.5, weak: 1.0, moderate: 0.5, strong: 0 }
+  };
+  const quickstartActions = {
+    "Speed to Lead": "Set up automated instant text + email response for every new lead.",
+    "Quote Follow-Up": "Activate a 4-touch follow-up sequence (day 1, 3, 5, 7) on every outgoing quote.",
+    "Review Generation": "Turn on automated review requests via text within 24 hours of job completion.",
+    "Pipeline Visibility": "Connect your FSM to a single dashboard so every open quote is visible in real time.",
+    "Customer Reactivation": "Launch an automated campaign to re-engage every customer who hasn\u2019t booked in 12+ months."
+  };
+
+  // Build pillar analysis with hours + priority
+  const pillarAnalysis = categories.map((cat, i) => {
+    const pct = Math.round((catScores[i] / cat.max) * 100);
+    const tbl = hoursLostMap[cat.name] || { critical: 1.5, weak: 1.0, moderate: 0.5, strong: 0 };
+    const hours = pct < 25 ? tbl.critical : pct < 50 ? tbl.weak : pct < 75 ? tbl.moderate : tbl.strong;
+    return { name: cat.name, score: catScores[i], max: cat.max, pct, hours, action: quickstartActions[cat.name] || "" };
+  }).sort((a, b) => a.pct - b.pct);
+
+  const totalHoursLost = pillarAnalysis.reduce((sum, p) => sum + p.hours, 0);
+  const crewAnswer = bonusAnswers[5] || "";
+  const billingRate = crewAnswer.includes("25+") ? 150 : crewAnswer.includes("11") ? 125 : crewAnswer.includes("4") ? 100 : 75;
+  const annualDollarImpact = Math.round(totalHoursLost * billingRate * 52);
+  const proToolsCostAnnual = 297 * 12;
+  const roiMultiple = annualDollarImpact > 0 ? Math.round(annualDollarImpact / proToolsCostAnnual) : 0;
+
   // Store globally so report button can access
-  window._scoreData = { catScores, totalScore, tier, lossLow, lossHigh, ticketAnswer };
+  window._scoreData = { catScores, totalScore, tier, lossLow, lossHigh, ticketAnswer, pillarAnalysis, totalHoursLost, billingRate, annualDollarImpact };
 
   const card = document.getElementById('resultsCard');
 
   // Find weakest pillar for teaser
-  const weakest = categories.map((cat, i) => ({ name: cat.name, score: catScores[i], max: cat.max, pct: Math.round((catScores[i]/cat.max)*100) }))
-    .sort((a, b) => a.pct - b.pct)[0];
+  const weakest = pillarAnalysis[0];
+
+  // Build priority matrix HTML
+  const startHere = pillarAnalysis.filter((_, i) => i === 0);
+  const doNext = pillarAnalysis.filter((_, i) => i >= 1 && i <= 2);
+  const saveLater = pillarAnalysis.filter((_, i) => i >= 3);
+
+  function priorityPill(p, label, bgColor, textColor) {
+    const barColor = p.pct >= 75 ? 'var(--green)' : p.pct >= 50 ? 'var(--blue)' : p.pct >= 25 ? 'var(--yellow)' : 'var(--red)';
+    return `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface-2);border:1px solid var(--border-light);border-radius:10px;margin-bottom:8px;">
+      <div style="width:8px;height:40px;border-radius:4px;background:${barColor};flex-shrink:0;"></div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-weight:600;color:#fff;font-size:14px;">${p.name}</span>
+          <span style="font-size:13px;font-weight:600;color:${barColor};">${p.score}/${p.max}</span>
+        </div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${p.hours > 0 ? p.hours + ' hrs/wk lost' : 'On track'}</div>
+      </div>
+    </div>`;
+  }
+
+  const matrixHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">
+      <div style="grid-column:1/-1;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:rgba(239,68,68,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <span style="font-size:12px;">1</span>
+          </div>
+          <span style="font-size:13px;font-weight:700;color:#ef4444;text-transform:uppercase;letter-spacing:0.05em;">Start Here</span>
+        </div>
+        ${startHere.map(p => priorityPill(p)).join('')}
+      </div>
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:rgba(234,179,8,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <span style="font-size:12px;">2</span>
+          </div>
+          <span style="font-size:13px;font-weight:700;color:#eab308;text-transform:uppercase;letter-spacing:0.05em;">Do Next</span>
+        </div>
+        ${doNext.map(p => priorityPill(p)).join('')}
+      </div>
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:rgba(59,130,246,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <span style="font-size:12px;">3</span>
+          </div>
+          <span style="font-size:13px;font-weight:700;color:#3b82f6;text-transform:uppercase;letter-spacing:0.05em;">Save for Later</span>
+        </div>
+        ${saveLater.map(p => priorityPill(p)).join('')}
+      </div>
+    </div>`;
+
+  // Build quick-start plan HTML (top 4 pillars with gaps)
+  const actionPillars = pillarAnalysis.filter(p => p.hours > 0).slice(0, 4);
+  const quickstartHTML = actionPillars.map((p, i) => `
+    <div style="display:flex;gap:14px;padding:16px 0;${i < actionPillars.length - 1 ? 'border-bottom:1px solid var(--border);' : ''}">
+      <div style="width:32px;height:32px;border-radius:50%;background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--green);font-weight:700;font-size:14px;">
+        ${i + 1}
+      </div>
+      <div style="flex:1;">
+        <div style="font-weight:600;color:#fff;font-size:14px;margin-bottom:2px;">Week ${i + 1}: ${p.name}</div>
+        <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;">${p.action}</div>
+      </div>
+    </div>`).join('');
 
   card.innerHTML = `
     <div class="score-ring">
@@ -1558,7 +1793,40 @@ function renderResults() {
       <div class="revenue-impact-value" style="color:${tier.color}">$${lossLow.toLocaleString()} \u2013 $${lossHigh.toLocaleString()}/mo</div>
     </div>
 
-    <div style="background:var(--surface-2);border:1px solid var(--border-light);border-radius:12px;padding:24px;margin:24px 0;text-align:left;">
+    <!-- HOURS LOST + DOLLAR IMPACT -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0;">
+      <div style="background:linear-gradient(135deg, rgba(239,68,68,0.08), rgba(239,68,68,0.03));border:1px solid rgba(239,68,68,0.2);border-radius:12px;padding:20px;text-align:center;">
+        <div style="font-size:32px;font-weight:800;color:#ef4444;line-height:1;">${totalHoursLost}</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;text-transform:uppercase;letter-spacing:0.05em;">Hours Lost / Week</div>
+      </div>
+      <div style="background:linear-gradient(135deg, rgba(234,179,8,0.08), rgba(234,179,8,0.03));border:1px solid rgba(234,179,8,0.2);border-radius:12px;padding:20px;text-align:center;">
+        <div style="font-size:32px;font-weight:800;color:#eab308;line-height:1;">$${annualDollarImpact.toLocaleString()}</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;text-transform:uppercase;letter-spacing:0.05em;">Annual Productivity Loss</div>
+      </div>
+    </div>
+    ${roiMultiple >= 2 ? `
+    <div style="background:linear-gradient(135deg, rgba(76,175,80,0.1), rgba(76,175,80,0.03));border:1px solid rgba(76,175,80,0.25);border-radius:10px;padding:14px 20px;text-align:center;margin-bottom:20px;">
+      <span style="font-size:14px;color:var(--text-secondary);">Pro Tools at $297/mo = $${proToolsCostAnnual.toLocaleString()}/yr.</span>
+      <span style="font-size:14px;font-weight:700;color:var(--green);"> That\u2019s a ${roiMultiple}x return.</span>
+    </div>` : ''}
+
+    <!-- PRIORITY MATRIX -->
+    <div style="background:var(--surface-2);border:1px solid var(--border-light);border-radius:12px;padding:24px;margin:0 0 20px;text-align:left;">
+      <h3 style="color:#fff;font-size:17px;margin-bottom:4px;">Your Priority Roadmap</h3>
+      <p style="color:var(--text-muted);font-size:13px;margin-bottom:0;">Ranked by impact \u2014 fix the biggest leaks first.</p>
+      ${matrixHTML}
+    </div>
+
+    <!-- 4-WEEK QUICK-START PLAN -->
+    ${actionPillars.length > 0 ? `
+    <div style="background:var(--surface-2);border:1px solid var(--border-light);border-radius:12px;padding:24px;margin:0 0 20px;text-align:left;">
+      <h3 style="color:#fff;font-size:17px;margin-bottom:4px;">Your 4-Week Quick-Start Plan</h3>
+      <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">One fix per week, starting with your biggest gap.</p>
+      ${quickstartHTML}
+    </div>` : ''}
+
+    <!-- REPORT INCLUDES -->
+    <div style="background:var(--surface-2);border:1px solid var(--border-light);border-radius:12px;padding:24px;margin:0 0 24px;text-align:left;">
       <h3 style="color:#fff;font-size:17px;margin-bottom:16px;">Your 6-page report includes:</h3>
       <div style="display:flex;flex-direction:column;gap:12px;">
         <div style="display:flex;align-items:flex-start;gap:10px;">
@@ -1624,7 +1892,7 @@ function renderResults() {
         name: userData.name || '',
         email: userData.email || '',
         phone: userData.phone || '',
-        company: userData.website || ''
+        company: bonusAnswers[10] || ''
       });
       if (window._agmContactId) params.set('agm_contact_id', window._agmContactId);
       lcta.href = 'https://agmpro-byte.github.io/agm-launchpad/?' + params.toString();
@@ -1651,7 +1919,7 @@ function renderResults() {
 }
 
 function startLaunchpadCheckout() {
-  const industryRaw = (bonusAnswers[5] || '').trim();
+  const industryRaw = (bonusAnswers[8] || '').trim();
   const industryMap = {
     'artificial turf': 'turf',
     'pest control': 'pest',
@@ -1660,7 +1928,7 @@ function startLaunchpadCheckout() {
   const contactName = userData.name || '';
 
   const checkoutPayload = {
-    business_name: userData.website || contactName + "'s Business",
+    business_name: bonusAnswers[10] || contactName + "'s Business",
     contact_name: contactName,
     contact_email: userData.email || '',
     city: '',
@@ -1728,7 +1996,7 @@ function openFullReport() {
   const projRecovery = Math.round(lossHigh * 0.6).toLocaleString();
   const projAnnual = (Math.round(lossHigh * 0.6) * 12).toLocaleString();
 
-  const lpParams = new URLSearchParams({name: userData.name||'', email: userData.email||'', phone: userData.phone||'', company: userData.website||''});
+  const lpParams = new URLSearchParams({name: userData.name||'', email: userData.email||'', phone: userData.phone||'', company: bonusAnswers[10]||''});
   if (window._agmContactId) lpParams.set('agm_contact_id', window._agmContactId);
   const launchpadUrl = 'https://agmpro-byte.github.io/agm-launchpad/?' + lpParams.toString();
 
@@ -1779,7 +2047,7 @@ function openFullReport() {
   const sorted = categories.map((cat, i) => ({ name: cat.name, score: catScores[i], max: cat.max, pct: Math.round((catScores[i]/cat.max)*100) }))
     .sort((a, b) => a.pct - b.pct);
   const weakest = sorted[0].name;
-  const fsm = (bonusAnswers[0] || 'your current software');
+  const fsm = (bonusAnswers[4] || 'your current software');
 
   let gapHTML = '';
   sorted.forEach((s, i) => {
@@ -1881,10 +2149,10 @@ h1{font-size:2.4rem;font-weight:700;letter-spacing:-0.02em;line-height:1.15;colo
     </div>
     <div class="card" style="align-self:start;">
       <h4 style="margin-bottom:0.75rem;font-size:0.7rem;">Business Snapshot</h4>
-      <div class="stat-item"><div class="stat-label">Avg. Ticket Value</div><div class="stat-value">${bonusAnswers[2] || 'Not provided'}</div></div>
-      <div class="stat-item"><div class="stat-label">Crew Size</div><div class="stat-value">${bonusAnswers[1] || 'Not provided'}</div></div>
-      <div class="stat-item"><div class="stat-label">Current Software</div><div class="stat-value">${bonusAnswers[0] || 'Not provided'}</div></div>
-      <div class="stat-item"><div class="stat-label">Biggest Headache</div><div class="stat-value">${bonusAnswers[3] || 'Not provided'}</div></div>
+      <div class="stat-item"><div class="stat-label">Avg. Ticket Value</div><div class="stat-value">${bonusAnswers[6] || 'Not provided'}</div></div>
+      <div class="stat-item"><div class="stat-label">Crew Size</div><div class="stat-value">${bonusAnswers[5] || 'Not provided'}</div></div>
+      <div class="stat-item"><div class="stat-label">Current Software</div><div class="stat-value">${bonusAnswers[4] || 'Not provided'}</div></div>
+      <div class="stat-item"><div class="stat-label">Biggest Headache</div><div class="stat-value">${bonusAnswers[9] || 'Not provided'}</div></div>
     </div>
   </div>
   ${pageFooter(2)}

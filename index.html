@@ -1646,47 +1646,53 @@ function renderResults() {
   // Sample-confirmation surface (2026-05-27 pivot per Troy):
   //   This page is NOT the personalized data delivery — the email is.
   //   On-screen post-submit shows: brand confirmation, sample CAS-wheel
-  //   skeleton, list of what's in the report, secondary CTA to upgrade.
+  //   skeleton, single prominent CTA "Check your email for your results"
+  //   directly under the wheel for maximum visual priority, then the
+  //   what's-in-your-report list, then spam-folder hint.
   //   Canonical personalized report lives at app.agmprotools.com/report/<id>
-  //   linked from the email's clickable graphic.
+  //   linked from the email's clickable graphic. The upgrade pitch lives
+  //   inside the email and on the personalized report page — NOT here.
+  //
+  //   Dark theme palette (matching the existing quiz page, line 1926):
+  //     text bright   #e8e8e8
+  //     text muted    #9ca3af
+  //     text dim      #6b7280
+  //     bg card       #141414
+  //     border        #2a2a2a
+  //     brand green   #19561A (dark) / #7ee787 (light accent) / #4CAF50 (mid)
   const card = document.getElementById('resultsCard');
   const userEmailEl = document.getElementById('userEmail');
   const userEmail = (userEmailEl && userEmailEl.value) || 'your inbox';
-
-  // Industry-aware upgrade CTA. Defaults to Jobber STARTER ($97/mo).
-  const industryRaw = (bonusAnswers[8] || '').trim();
-  const fsm = (bonusAnswers[4] || '').trim();
-  const upgradeUrl = 'https://app.agmprotools.com/start?from=cas';
 
   card.innerHTML = `
     <div style="text-align:center;padding:32px 16px 16px;">
       <div style="display:inline-flex;align-items:center;justify-content:center;
                   width:72px;height:72px;border-radius:50%;
-                  background:linear-gradient(135deg,#19561A,#7ee787);
+                  background:linear-gradient(135deg,#19561A,#4CAF50);
                   color:#fff;font-size:36px;font-weight:700;
-                  box-shadow:0 14px 28px rgba(25,86,26,.35);margin-bottom:20px;">✓</div>
-      <h1 style="font-size:30px;line-height:1.2;margin:0 0 12px;color:var(--text1,#0f1419);
+                  box-shadow:0 14px 28px rgba(76,175,80,.35);margin-bottom:20px;">✓</div>
+      <h1 style="font-size:30px;line-height:1.2;margin:0 0 12px;color:#ffffff;
                  font-weight:800;letter-spacing:-0.02em;">
         Your Contractor Automation Score is ready.
       </h1>
-      <p style="font-size:18px;line-height:1.5;margin:0 0 6px;color:var(--text2,#475569);">
+      <p style="font-size:18px;line-height:1.5;margin:0 0 6px;color:#9ca3af;">
         We've sent your personalized AGM Pro Tools Diagnostic to:
       </p>
-      <p style="font-size:18px;line-height:1.4;margin:0 0 32px;color:var(--accent,#19561A);
+      <p style="font-size:18px;line-height:1.4;margin:0 0 32px;color:#7ee787;
                 font-weight:700;word-break:break-all;">${userEmail}</p>
     </div>
 
     <!-- Sample CAS wheel — skeleton/teaser, not the contractor's actual number -->
-    <div style="display:flex;justify-content:center;margin:0 0 28px;">
-      <div style="position:relative;width:180px;height:180px;">
+    <div style="display:flex;justify-content:center;margin:0 0 24px;">
+      <div style="position:relative;width:200px;height:200px;">
         <svg viewBox="0 0 200 200" style="width:100%;height:100%;">
-          <circle cx="100" cy="100" r="90" fill="none" stroke="#e5e7eb" stroke-width="14"/>
+          <circle cx="100" cy="100" r="90" fill="none" stroke="#2a2a2a" stroke-width="14"/>
           <circle cx="100" cy="100" r="90" fill="none"
                   stroke="url(#sampleGrad)" stroke-width="14"
-                  stroke-dasharray="565.5" stroke-dashoffset="0"
+                  stroke-dasharray="565.5" stroke-dashoffset="141"
                   stroke-linecap="round"
                   transform="rotate(-90 100 100)"
-                  style="opacity:0.35;"/>
+                  style="opacity:0.85;"/>
           <defs>
             <linearGradient id="sampleGrad" x1="0" x2="1" y1="0" y2="1">
               <stop offset="0%" stop-color="#19561A"/>
@@ -1696,69 +1702,63 @@ function renderResults() {
         </svg>
         <div style="position:absolute;inset:0;display:flex;flex-direction:column;
                     align-items:center;justify-content:center;text-align:center;">
-          <div style="font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;
-                      letter-spacing:0.08em;margin-bottom:4px;">Your Score</div>
-          <div style="font-size:56px;font-weight:900;color:#94a3b8;line-height:1;
+          <div style="font-size:11px;color:#9ca3af;font-weight:700;text-transform:uppercase;
+                      letter-spacing:0.08em;margin-bottom:6px;">Your Score</div>
+          <div style="font-size:60px;font-weight:900;color:#e8e8e8;line-height:1;
                       letter-spacing:-0.04em;">—</div>
-          <div style="font-size:11px;color:#94a3b8;font-weight:700;letter-spacing:0.08em;
-                      margin-top:6px;">CHECK YOUR INBOX</div>
+          <div style="font-size:11px;color:#7ee787;font-weight:700;letter-spacing:0.08em;
+                      margin-top:8px;">CHECK YOUR INBOX</div>
         </div>
       </div>
     </div>
 
+    <!-- Primary CTA — directly under the dial for maximum visual priority -->
+    <div style="text-align:center;padding:0 16px 32px;">
+      <div style="display:inline-flex;align-items:center;gap:14px;padding:18px 36px;
+                  background:linear-gradient(135deg,#19561A,#4CAF50);color:#fff;
+                  border-radius:12px;font-weight:800;font-size:19px;letter-spacing:-0.01em;
+                  box-shadow:0 14px 32px rgba(76,175,80,.40);
+                  border:1px solid rgba(126,231,135,.30);">
+        <span style="font-size:24px;">📬</span>
+        <span>Check your email for your results.</span>
+      </div>
+    </div>
+
     <!-- What's in the report list -->
-    <div style="max-width:520px;margin:0 auto 32px;padding:0 16px;">
-      <p style="font-size:14px;color:#64748b;font-weight:700;text-transform:uppercase;
-                letter-spacing:0.06em;margin:0 0 12px;text-align:center;">
+    <div style="max-width:520px;margin:0 auto 28px;padding:0 16px;">
+      <p style="font-size:13px;color:#9ca3af;font-weight:700;text-transform:uppercase;
+                letter-spacing:0.06em;margin:0 0 14px;text-align:center;">
         Your personalized report includes:
       </p>
       <ul style="list-style:none;padding:0;margin:0;font-size:16px;line-height:1.6;
-                 color:var(--text1,#0f1419);">
+                 color:#e8e8e8;">
         <li style="padding:8px 0;display:flex;align-items:start;gap:10px;">
-          <span style="color:#19561A;font-weight:700;flex-shrink:0;">▸</span>
+          <span style="color:#4CAF50;font-weight:700;flex-shrink:0;">▸</span>
           <span>Your CAS score across 5 pillars (out of 100)</span>
         </li>
         <li style="padding:8px 0;display:flex;align-items:start;gap:10px;">
-          <span style="color:#19561A;font-weight:700;flex-shrink:0;">▸</span>
+          <span style="color:#4CAF50;font-weight:700;flex-shrink:0;">▸</span>
           <span>Top 3 revenue leaks with dollar values per month</span>
         </li>
         <li style="padding:8px 0;display:flex;align-items:start;gap:10px;">
-          <span style="color:#19561A;font-weight:700;flex-shrink:0;">▸</span>
+          <span style="color:#4CAF50;font-weight:700;flex-shrink:0;">▸</span>
           <span>45-second audio walkthrough by Harlan</span>
         </li>
         <li style="padding:8px 0;display:flex;align-items:start;gap:10px;">
-          <span style="color:#19561A;font-weight:700;flex-shrink:0;">▸</span>
+          <span style="color:#4CAF50;font-weight:700;flex-shrink:0;">▸</span>
           <span>Recommended next-step automations, prioritized</span>
         </li>
         <li style="padding:8px 0;display:flex;align-items:start;gap:10px;">
-          <span style="color:#19561A;font-weight:700;flex-shrink:0;">▸</span>
+          <span style="color:#4CAF50;font-weight:700;flex-shrink:0;">▸</span>
           <span>Peer benchmark — how your score compares to other contractors</span>
         </li>
       </ul>
     </div>
 
     <!-- Spam-folder hint -->
-    <p style="text-align:center;font-size:14px;color:#64748b;margin:0 0 32px;padding:0 24px;">
-      Don't see the email in a few minutes? Check your spam folder.
+    <p style="text-align:center;font-size:14px;color:#6b7280;margin:0 0 16px;padding:0 24px;">
+      Don't see it in a few minutes? Check your spam folder.
     </p>
-
-    <!-- Upgrade CTA — Path A funnel into Starter -->
-    <div style="background:linear-gradient(135deg,rgba(25,86,26,.06),rgba(126,231,135,.10));
-                border:1px solid rgba(25,86,26,.15);border-radius:14px;padding:28px 24px;
-                margin:0 16px 24px;text-align:center;">
-      <h2 style="font-size:22px;font-weight:800;margin:0 0 8px;color:var(--text1,#0f1419);
-                 letter-spacing:-0.01em;">Ready to unlock your live dashboard?</h2>
-      <p style="font-size:16px;line-height:1.5;color:var(--text2,#475569);margin:0 0 20px;">
-        Connect your FSM and turn diagnostic insights into automated workflows.
-        Real-time pipeline, lead response, quote follow-up — all running for you.
-      </p>
-      <a href="${upgradeUrl}"
-         style="display:inline-block;padding:14px 32px;background:#19561A;color:#fff;
-                text-decoration:none;border-radius:8px;font-weight:700;font-size:17px;
-                box-shadow:0 10px 22px rgba(25,86,26,.25);">
-        Start your $97/mo Starter →
-      </a>
-    </div>
   `;
 }
 

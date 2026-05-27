@@ -1643,279 +1643,123 @@ function submitEmail(e) {
 }
 
 function renderResults() {
-  // Calculate scores
-  const catScores = [0, 0, 0, 0, 0];
-  scoredQuestions.forEach((q, i) => {
-    catScores[q.catIndex] += (answers[i] || 0);
-  });
-  const totalScore = catScores.reduce((a, b) => a + b, 0);
-
-  // Tier
-  const tier = tiers.find(t => totalScore >= t.min);
-
-  // Revenue impact — scaled by ticket value (index 6 = avg_ticket_value after 4 quantitative + fsm + crew)
-  const ticketAnswer = bonusAnswers[6] || "";
-  const ticketMultiplier = ticketAnswer.includes("15,000") ? 4.0
-    : ticketAnswer.includes("5,000") ? 2.5
-    : ticketAnswer.includes("2,000") ? 1.5
-    : ticketAnswer.includes("500") && !ticketAnswer.includes("Under") ? 1.0
-    : 0.7;
-  let monthlyLoss = 0;
-  categories.forEach((cat, i) => {
-    const pct = catScores[i] / cat.max;
-    if (pct < 0.5) {
-      monthlyLoss += Math.round((2000 - (pct * 2 * 1500)) * ticketMultiplier);
-    }
-  });
-  const lossLow = Math.max(monthlyLoss, 500);
-  const lossHigh = Math.round(lossLow * 2.2);
-
-  // Hours lost per pillar \u2014 matches backend HOURS_LOST_MAP
-  const hoursLostMap = {
-    "Speed to Lead":        { critical: 3.0, weak: 2.0, moderate: 1.0, strong: 0 },
-    "Quote Follow-Up":      { critical: 3.0, weak: 2.0, moderate: 1.0, strong: 0 },
-    "Review Generation":    { critical: 2.0, weak: 1.5, moderate: 0.5, strong: 0 },
-    "Pipeline Visibility":  { critical: 2.0, weak: 1.5, moderate: 0.5, strong: 0 },
-    "Customer Reactivation": { critical: 1.5, weak: 1.0, moderate: 0.5, strong: 0 }
-  };
-  const quickstartActions = {
-    "Speed to Lead": "Set up automated instant text + email response for every new lead.",
-    "Quote Follow-Up": "Activate a 4-touch follow-up sequence (day 1, 3, 5, 7) on every outgoing quote.",
-    "Review Generation": "Turn on automated review requests via text within 24 hours of job completion.",
-    "Pipeline Visibility": "Connect your FSM to a single dashboard so every open quote is visible in real time.",
-    "Customer Reactivation": "Launch an automated campaign to re-engage every customer who hasn\u2019t booked in 12+ months."
-  };
-
-  // Build pillar analysis with hours + priority
-  const pillarAnalysis = categories.map((cat, i) => {
-    const pct = Math.round((catScores[i] / cat.max) * 100);
-    const tbl = hoursLostMap[cat.name] || { critical: 1.5, weak: 1.0, moderate: 0.5, strong: 0 };
-    const hours = pct < 25 ? tbl.critical : pct < 50 ? tbl.weak : pct < 75 ? tbl.moderate : tbl.strong;
-    return { name: cat.name, score: catScores[i], max: cat.max, pct, hours, action: quickstartActions[cat.name] || "" };
-  }).sort((a, b) => a.pct - b.pct);
-
-  const totalHoursLost = pillarAnalysis.reduce((sum, p) => sum + p.hours, 0);
-  const crewAnswer = bonusAnswers[5] || "";
-  const billingRate = crewAnswer.includes("25+") ? 150 : crewAnswer.includes("11") ? 125 : crewAnswer.includes("4") ? 100 : 75;
-  const annualDollarImpact = Math.round(totalHoursLost * billingRate * 52);
-  const proToolsCostAnnual = 297 * 12;
-  const roiMultiple = annualDollarImpact > 0 ? Math.round(annualDollarImpact / proToolsCostAnnual) : 0;
-
-  // Store globally so report button can access
-  window._scoreData = { catScores, totalScore, tier, lossLow, lossHigh, ticketAnswer, pillarAnalysis, totalHoursLost, billingRate, annualDollarImpact };
-
+  // Sample-confirmation surface (2026-05-27 pivot per Troy):
+  //   This page is NOT the personalized data delivery — the email is.
+  //   On-screen post-submit shows: brand confirmation, sample CAS-wheel
+  //   skeleton, list of what's in the report, secondary CTA to upgrade.
+  //   Canonical personalized report lives at app.agmprotools.com/report/<id>
+  //   linked from the email's clickable graphic.
   const card = document.getElementById('resultsCard');
+  const userEmailEl = document.getElementById('userEmail');
+  const userEmail = (userEmailEl && userEmailEl.value) || 'your inbox';
 
-  // Find weakest pillar for teaser
-  const weakest = pillarAnalysis[0];
-
-  // Build priority matrix HTML
-  const startHere = pillarAnalysis.filter((_, i) => i === 0);
-  const doNext = pillarAnalysis.filter((_, i) => i >= 1 && i <= 2);
-  const saveLater = pillarAnalysis.filter((_, i) => i >= 3);
-
-  function priorityPill(p, label, bgColor, textColor) {
-    const barColor = p.pct >= 75 ? 'var(--green)' : p.pct >= 50 ? 'var(--blue)' : p.pct >= 25 ? 'var(--yellow)' : 'var(--red)';
-    return `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface-2);border:1px solid var(--border-light);border-radius:10px;margin-bottom:8px;">
-      <div style="width:8px;height:40px;border-radius:4px;background:${barColor};flex-shrink:0;"></div>
-      <div style="flex:1;min-width:0;">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-weight:600;color:#fff;font-size:14px;">${p.name}</span>
-          <span style="font-size:13px;font-weight:600;color:${barColor};">${p.score}/${p.max}</span>
-        </div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${p.hours > 0 ? p.hours + ' hrs/wk lost' : 'On track'}</div>
-      </div>
-    </div>`;
-  }
-
-  const matrixHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">
-      <div style="grid-column:1/-1;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-          <div style="width:24px;height:24px;border-radius:50%;background:rgba(239,68,68,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <span style="font-size:12px;">1</span>
-          </div>
-          <span style="font-size:13px;font-weight:700;color:#ef4444;text-transform:uppercase;letter-spacing:0.05em;">Start Here</span>
-        </div>
-        ${startHere.map(p => priorityPill(p)).join('')}
-      </div>
-      <div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-          <div style="width:24px;height:24px;border-radius:50%;background:rgba(234,179,8,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <span style="font-size:12px;">2</span>
-          </div>
-          <span style="font-size:13px;font-weight:700;color:#eab308;text-transform:uppercase;letter-spacing:0.05em;">Do Next</span>
-        </div>
-        ${doNext.map(p => priorityPill(p)).join('')}
-      </div>
-      <div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-          <div style="width:24px;height:24px;border-radius:50%;background:rgba(59,130,246,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <span style="font-size:12px;">3</span>
-          </div>
-          <span style="font-size:13px;font-weight:700;color:#3b82f6;text-transform:uppercase;letter-spacing:0.05em;">Save for Later</span>
-        </div>
-        ${saveLater.map(p => priorityPill(p)).join('')}
-      </div>
-    </div>`;
-
-  // Build quick-start plan HTML (top 4 pillars with gaps)
-  const actionPillars = pillarAnalysis.filter(p => p.hours > 0).slice(0, 4);
-  const quickstartHTML = actionPillars.map((p, i) => `
-    <div style="display:flex;gap:14px;padding:16px 0;${i < actionPillars.length - 1 ? 'border-bottom:1px solid var(--border);' : ''}">
-      <div style="width:32px;height:32px;border-radius:50%;background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--green);font-weight:700;font-size:14px;">
-        ${i + 1}
-      </div>
-      <div style="flex:1;">
-        <div style="font-weight:600;color:#fff;font-size:14px;margin-bottom:2px;">Week ${i + 1}: ${p.name}</div>
-        <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;">${p.action}</div>
-      </div>
-    </div>`).join('');
+  // Industry-aware upgrade CTA. Defaults to Jobber STARTER ($97/mo).
+  const industryRaw = (bonusAnswers[8] || '').trim();
+  const fsm = (bonusAnswers[4] || '').trim();
+  const upgradeUrl = 'https://app.agmprotools.com/start?from=cas';
 
   card.innerHTML = `
-    <div class="score-ring">
-      <svg viewBox="0 0 200 200">
-        <circle class="score-ring-bg" cx="100" cy="100" r="90"/>
-        <circle class="score-ring-fill" id="ringFill" cx="100" cy="100" r="90" stroke="${tier.color}"/>
-      </svg>
-      <div>
-        <div class="score-number" id="scoreNum" style="color:${tier.color}">0</div>
-        <div class="score-of">/100</div>
-      </div>
-    </div>
-    <div class="tier-badge" style="color:${tier.color}; border-color:${tier.color}33; background:${tier.color}11;">
-      <span>${tier.label}</span>
-    </div>
-    <p class="tier-desc">${tier.desc}</p>
-
-    <div class="revenue-impact">
-      <div class="revenue-impact-label">Estimated Monthly Revenue Left on the Table</div>
-      <div class="revenue-impact-value" style="color:${tier.color}">$${lossLow.toLocaleString()} \u2013 $${lossHigh.toLocaleString()}/mo</div>
+    <div style="text-align:center;padding:32px 16px 16px;">
+      <div style="display:inline-flex;align-items:center;justify-content:center;
+                  width:72px;height:72px;border-radius:50%;
+                  background:linear-gradient(135deg,#19561A,#7ee787);
+                  color:#fff;font-size:36px;font-weight:700;
+                  box-shadow:0 14px 28px rgba(25,86,26,.35);margin-bottom:20px;">✓</div>
+      <h1 style="font-size:30px;line-height:1.2;margin:0 0 12px;color:var(--text1,#0f1419);
+                 font-weight:800;letter-spacing:-0.02em;">
+        Your Contractor Automation Score is ready.
+      </h1>
+      <p style="font-size:18px;line-height:1.5;margin:0 0 6px;color:var(--text2,#475569);">
+        We've sent your personalized AGM Pro Tools Diagnostic to:
+      </p>
+      <p style="font-size:18px;line-height:1.4;margin:0 0 32px;color:var(--accent,#19561A);
+                font-weight:700;word-break:break-all;">${userEmail}</p>
     </div>
 
-    <!-- HOURS LOST + DOLLAR IMPACT -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0;">
-      <div style="background:linear-gradient(135deg, rgba(239,68,68,0.08), rgba(239,68,68,0.03));border:1px solid rgba(239,68,68,0.2);border-radius:12px;padding:20px;text-align:center;">
-        <div style="font-size:32px;font-weight:800;color:#ef4444;line-height:1;">${totalHoursLost}</div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;text-transform:uppercase;letter-spacing:0.05em;">Hours Lost / Week</div>
-      </div>
-      <div style="background:linear-gradient(135deg, rgba(234,179,8,0.08), rgba(234,179,8,0.03));border:1px solid rgba(234,179,8,0.2);border-radius:12px;padding:20px;text-align:center;">
-        <div style="font-size:32px;font-weight:800;color:#eab308;line-height:1;">$${annualDollarImpact.toLocaleString()}</div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;text-transform:uppercase;letter-spacing:0.05em;">Annual Productivity Loss</div>
-      </div>
-    </div>
-    ${roiMultiple >= 2 ? `
-    <div style="background:linear-gradient(135deg, rgba(76,175,80,0.1), rgba(76,175,80,0.03));border:1px solid rgba(76,175,80,0.25);border-radius:10px;padding:14px 20px;text-align:center;margin-bottom:20px;">
-      <span style="font-size:14px;color:var(--text-secondary);">Pro Tools at $297/mo = $${proToolsCostAnnual.toLocaleString()}/yr.</span>
-      <span style="font-size:14px;font-weight:700;color:var(--green);"> That\u2019s a ${roiMultiple}x return.</span>
-    </div>` : ''}
-
-    <!-- PRIORITY MATRIX -->
-    <div style="background:var(--surface-2);border:1px solid var(--border-light);border-radius:12px;padding:24px;margin:0 0 20px;text-align:left;">
-      <h3 style="color:#fff;font-size:17px;margin-bottom:4px;">Your Priority Roadmap</h3>
-      <p style="color:var(--text-muted);font-size:13px;margin-bottom:0;">Ranked by impact \u2014 fix the biggest leaks first.</p>
-      ${matrixHTML}
-    </div>
-
-    <!-- 4-WEEK QUICK-START PLAN -->
-    ${actionPillars.length > 0 ? `
-    <div style="background:var(--surface-2);border:1px solid var(--border-light);border-radius:12px;padding:24px;margin:0 0 20px;text-align:left;">
-      <h3 style="color:#fff;font-size:17px;margin-bottom:4px;">Your 4-Week Quick-Start Plan</h3>
-      <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">One fix per week, starting with your biggest gap.</p>
-      ${quickstartHTML}
-    </div>` : ''}
-
-    <!-- REPORT INCLUDES -->
-    <div style="background:var(--surface-2);border:1px solid var(--border-light);border-radius:12px;padding:24px;margin:0 0 24px;text-align:left;">
-      <h3 style="color:#fff;font-size:17px;margin-bottom:16px;">Your 6-page report includes:</h3>
-      <div style="display:flex;flex-direction:column;gap:12px;">
-        <div style="display:flex;align-items:flex-start;gap:10px;">
-          <span style="color:#4CAF50;font-size:16px;flex-shrink:0;">&#10003;</span>
-          <span style="color:var(--text-secondary);font-size:14px;line-height:1.5;"><strong style="color:#fff;">Category breakdown</strong> \u2014 where you stand across all 5 pillars</span>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:10px;">
-          <span style="color:#4CAF50;font-size:16px;flex-shrink:0;">&#10003;</span>
-          <span style="color:var(--text-secondary);font-size:14px;line-height:1.5;"><strong style="color:#fff;">Gap analysis</strong> \u2014 exactly what each weakness is costing you and why</span>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:10px;">
-          <span style="color:#4CAF50;font-size:16px;flex-shrink:0;">&#10003;</span>
-          <span style="color:var(--text-secondary);font-size:14px;line-height:1.5;"><strong style="color:#fff;">What top contractors do differently</strong> \u2014 the specific automations closing your gaps</span>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:10px;">
-          <span style="color:#4CAF50;font-size:16px;flex-shrink:0;">&#10003;</span>
-          <span style="color:var(--text-secondary);font-size:14px;line-height:1.5;"><strong style="color:#fff;">90-day ROI projection</strong> \u2014 how much revenue you could recover</span>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:10px;">
-          <span style="color:#4CAF50;font-size:16px;flex-shrink:0;">&#10003;</span>
-          <span style="color:var(--text-secondary);font-size:14px;line-height:1.5;"><strong style="color:#fff;">Your automation roadmap</strong> \u2014 3 steps to start, prioritized for your business</span>
+    <!-- Sample CAS wheel — skeleton/teaser, not the contractor's actual number -->
+    <div style="display:flex;justify-content:center;margin:0 0 28px;">
+      <div style="position:relative;width:180px;height:180px;">
+        <svg viewBox="0 0 200 200" style="width:100%;height:100%;">
+          <circle cx="100" cy="100" r="90" fill="none" stroke="#e5e7eb" stroke-width="14"/>
+          <circle cx="100" cy="100" r="90" fill="none"
+                  stroke="url(#sampleGrad)" stroke-width="14"
+                  stroke-dasharray="565.5" stroke-dashoffset="0"
+                  stroke-linecap="round"
+                  transform="rotate(-90 100 100)"
+                  style="opacity:0.35;"/>
+          <defs>
+            <linearGradient id="sampleGrad" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0%" stop-color="#19561A"/>
+              <stop offset="100%" stop-color="#7ee787"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;
+                    align-items:center;justify-content:center;text-align:center;">
+          <div style="font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;
+                      letter-spacing:0.08em;margin-bottom:4px;">Your Score</div>
+          <div style="font-size:56px;font-weight:900;color:#94a3b8;line-height:1;
+                      letter-spacing:-0.04em;">—</div>
+          <div style="font-size:11px;color:#94a3b8;font-weight:700;letter-spacing:0.08em;
+                      margin-top:6px;">CHECK YOUR INBOX</div>
         </div>
       </div>
     </div>
 
-    <div class="results-ctas">
-      <button class="btn-primary" style="width:100%;max-width:400px;" onclick="openFullReport()">
-        View Your Full Report
-        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
-      </button>
-      <div class="results-email-note">A PDF copy has also been emailed to <strong>${userData.email || ''}</strong></div>
+    <!-- What's in the report list -->
+    <div style="max-width:520px;margin:0 auto 32px;padding:0 16px;">
+      <p style="font-size:14px;color:#64748b;font-weight:700;text-transform:uppercase;
+                letter-spacing:0.06em;margin:0 0 12px;text-align:center;">
+        Your personalized report includes:
+      </p>
+      <ul style="list-style:none;padding:0;margin:0;font-size:16px;line-height:1.6;
+                 color:var(--text1,#0f1419);">
+        <li style="padding:8px 0;display:flex;align-items:start;gap:10px;">
+          <span style="color:#19561A;font-weight:700;flex-shrink:0;">▸</span>
+          <span>Your CAS score across 5 pillars (out of 100)</span>
+        </li>
+        <li style="padding:8px 0;display:flex;align-items:start;gap:10px;">
+          <span style="color:#19561A;font-weight:700;flex-shrink:0;">▸</span>
+          <span>Top 3 revenue leaks with dollar values per month</span>
+        </li>
+        <li style="padding:8px 0;display:flex;align-items:start;gap:10px;">
+          <span style="color:#19561A;font-weight:700;flex-shrink:0;">▸</span>
+          <span>45-second audio walkthrough by Harlan</span>
+        </li>
+        <li style="padding:8px 0;display:flex;align-items:start;gap:10px;">
+          <span style="color:#19561A;font-weight:700;flex-shrink:0;">▸</span>
+          <span>Recommended next-step automations, prioritized</span>
+        </li>
+        <li style="padding:8px 0;display:flex;align-items:start;gap:10px;">
+          <span style="color:#19561A;font-weight:700;flex-shrink:0;">▸</span>
+          <span>Peer benchmark — how your score compares to other contractors</span>
+        </li>
+      </ul>
+    </div>
 
-      ${totalScore < 60 ? `
-      <div style="background:linear-gradient(135deg, #059669 0%, #10b981 100%);border-radius:12px;padding:24px;margin:16px 0;text-align:center;max-width:400px;width:100%;">
-        <div style="font-size:14px;color:rgba(255,255,255,0.85);margin-bottom:8px;">Your score suggests you could recover</div>
-        <div style="font-size:24px;font-weight:700;color:#fff;margin-bottom:12px;">$${lossLow.toLocaleString()} \u2013 $${lossHigh.toLocaleString()}/mo</div>
-        <div style="font-size:13px;color:rgba(255,255,255,0.75);margin-bottom:16px;">with the right automation in place</div>
-        <button onclick="startLaunchpadCheckout()" style="background:#fff;color:#059669;border:none;padding:14px 32px;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;width:100%;transition:transform 0.15s;">
-          Get Started with AGM Pro Tools \u2192
-        </button>
-        <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:10px;">$297/mo \u00b7 Cancel anytime \u00b7 Live in under 10 minutes</div>
-      </div>
-      ` : `
-      <button onclick="startLaunchpadCheckout()" class="btn-secondary" style="width:100%;max-width:400px;margin-top:8px;background:#059669;color:#fff;border-color:#059669;">
-        Get Started with AGM Pro Tools \u2014 $297/mo
-      </button>
-      `}
+    <!-- Spam-folder hint -->
+    <p style="text-align:center;font-size:14px;color:#64748b;margin:0 0 32px;padding:0 24px;">
+      Don't see the email in a few minutes? Check your spam folder.
+    </p>
 
-      <a href="https://link.agmpro.com/widget/bookings/pro-tools-strategy-call" target="_blank" class="btn-secondary" style="width:100%;max-width:400px;margin-top:8px;">
-        Book a Free Strategy Call
-      </a>
-      <a id="launchpadCta" href="#" target="_blank" class="btn-secondary" style="width:100%;max-width:400px;margin-top:8px;background:rgba(34,197,94,0.1);border-color:rgba(34,197,94,0.4);display:none;">
-        Get Started with AGM Pro Tools →
+    <!-- Upgrade CTA — Path A funnel into Starter -->
+    <div style="background:linear-gradient(135deg,rgba(25,86,26,.06),rgba(126,231,135,.10));
+                border:1px solid rgba(25,86,26,.15);border-radius:14px;padding:28px 24px;
+                margin:0 16px 24px;text-align:center;">
+      <h2 style="font-size:22px;font-weight:800;margin:0 0 8px;color:var(--text1,#0f1419);
+                 letter-spacing:-0.01em;">Ready to unlock your live dashboard?</h2>
+      <p style="font-size:16px;line-height:1.5;color:var(--text2,#475569);margin:0 0 20px;">
+        Connect your FSM and turn diagnostic insights into automated workflows.
+        Real-time pipeline, lead response, quote follow-up — all running for you.
+      </p>
+      <a href="${upgradeUrl}"
+         style="display:inline-block;padding:14px 32px;background:#19561A;color:#fff;
+                text-decoration:none;border-radius:8px;font-weight:700;font-size:17px;
+                box-shadow:0 10px 22px rgba(25,86,26,.25);">
+        Start your $97/mo Starter →
       </a>
     </div>
   `;
-
-  // Wire Launchpad CTA with pre-filled contact data
-  setTimeout(() => {
-    const lcta = document.getElementById('launchpadCta');
-    if (lcta) {
-      const params = new URLSearchParams({
-        name: userData.name || '',
-        email: userData.email || '',
-        phone: userData.phone || '',
-        company: bonusAnswers[10] || ''
-      });
-      if (window._agmContactId) params.set('agm_contact_id', window._agmContactId);
-      lcta.href = 'https://agmpro-byte.github.io/agm-launchpad/?' + params.toString();
-      lcta.style.display = '';
-    }
-  }, 2000);
-
-  // Animate score counter
-  animateCounter(document.getElementById('scoreNum'), totalScore, tier.color);
-
-  // Animate ring
-  const circumference = 2 * Math.PI * 90; // 565.48
-  const offset = circumference - (totalScore / 100) * circumference;
-  setTimeout(() => {
-    document.getElementById('ringFill').style.strokeDashoffset = offset;
-  }, 100);
-
-  // Animate bars
-  setTimeout(() => {
-    document.querySelectorAll('.cat-bar-fill').forEach(bar => {
-      bar.style.width = bar.dataset.width + '%';
-    });
-  }, 400);
 }
 
 function startLaunchpadCheckout() {

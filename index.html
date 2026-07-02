@@ -1596,16 +1596,19 @@ function submitEmail(e) {
     phone: userData.phone,
     company: bonusAnswers[10] || ''
   };
-  // Map scored question answers (values) to answer indices for backend
+  // Send RAW POINT VALUES to the backend — it matches options by points
+  // (calculate_score, since 2026-04-05). Do NOT convert to option indices:
+  // that was the 04-12 "fix overwrite" regression that inverted every real
+  // score until 2026-07-02 (options are listed best-first here, so index 0
+  // = the BEST answer but scored as the WORST). Guarded by the deploy-gate
+  // scoring canary + the 30-min drift check.
   const keyMap = ['speed_to_lead', 'quote_followup_method', 'quote_followup_touches',
     'review_method', 'review_count', 'pipeline_visibility', 'close_rate_tracking',
     'reactivation_outreach', 'customer_data'];
   const answerPayload = {};
   scoredQuestions.forEach((q, i) => {
     if (keyMap[i]) {
-      const val = answers[i] || 0;
-      const optIdx = q.options.findIndex(o => o.value === val);
-      answerPayload[keyMap[i]] = Math.max(0, optIdx);
+      answerPayload[keyMap[i]] = answers[i] || 0;
     }
   });
   // UTM + referrer capture (persisted across multi-step quiz via sessionStorage)
@@ -1631,15 +1634,69 @@ function submitEmail(e) {
     referrer: utm.referrer || ''
   };
   const SCORE_API = 'https://agm-pro--agm-automation-score-score-app.modal.run/score';
+  // Fail LOUD (2026-07-02): the old fire-and-forget .catch(() => {}) let the
+  // success screen lie for three weeks while every submission 500'd. The
+  // results page still renders optimistically (the backend takes ~30s for
+  // narration + email), but a failed delivery now shows a visible banner
+  // and fires a /score-error pixel so failures are counted server-side.
   fetch(SCORE_API, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ contact, answers: answerPayload, intake })
-  }).then(r => r.json()).then(data => {
-    if (data && data.contact_id) {
-      window._agmContactId = data.contact_id;
+  }).then(r => r.json().then(data => ({ httpOk: r.ok, data })))
+    .then(({ httpOk, data }) => {
+      if (httpOk && data && data.status === 'ok') {
+        if (data.contact_id) window._agmContactId = data.contact_id;
+        sendEventPixel('/completed');
+      } else {
+        showDeliveryError();
+        sendEventPixel('/score-error');
+      }
+    })
+    .catch(() => {
+      showDeliveryError();
+      sendEventPixel('/score-error');
+    });
+}
+
+function sendEventPixel(path) {
+  try {
+    let utm = {};
+    try { utm = JSON.parse(sessionStorage.getItem('utm') || '{}'); } catch (e) {}
+    fetch('https://agm-pro--agm-automation-score-score-app.modal.run/pixel', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        path: path,
+        referrer: document.referrer || '',
+        utm_source: utm.utm_source || '',
+        utm_medium: utm.utm_medium || '',
+        utm_campaign: utm.utm_campaign || '',
+        user_agent: navigator.userAgent || ''
+      }),
+      keepalive: true
+    }).catch(() => {});
+  } catch (e) {}
+}
+
+function showDeliveryError() {
+  try {
+    if (document.getElementById('deliveryErrorBanner')) return;
+    const banner = document.createElement('div');
+    banner.id = 'deliveryErrorBanner';
+    banner.setAttribute('role', 'alert');
+    banner.style.cssText = 'position:sticky;top:0;z-index:9999;background:#7f1d1d;color:#fff;' +
+      'padding:14px 20px;text-align:center;font-size:15px;line-height:1.5;';
+    banner.innerHTML = 'We hit a snag delivering your report &mdash; your score email may not arrive. ' +
+      'Please email <a href="mailto:support@agmprotools.com" style="color:#fecaca;text-decoration:underline;">support@agmprotools.com</a> ' +
+      'and we’ll send it to you directly.';
+    const results = document.getElementById('resultsSection');
+    if (results && results.parentNode) {
+      results.parentNode.insertBefore(banner, results);
+    } else {
+      document.body.insertBefore(banner, document.body.firstChild);
     }
-  }).catch(() => {});
+  } catch (e) {}
 }
 
 function renderResults() {

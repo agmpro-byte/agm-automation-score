@@ -90,16 +90,28 @@ body {
 
 .logo span { color: var(--accent); }
 
-.header-badge {
-  font-size: 11px;
+.header-cta {
+  font-size: 12px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-muted);
-  background: var(--surface-2);
-  padding: 4px 10px;
+  letter-spacing: 0.08em;
+  color: #fff;
+  background: var(--orange);
+  padding: 9px 18px;
   border-radius: 100px;
-  border: 1px solid var(--border);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: 0 2px 12px rgba(249, 115, 22, 0.35);
 }
+
+.header-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 18px rgba(249, 115, 22, 0.5);
+  filter: brightness(1.08);
+}
+
+.header-cta:active { transform: translateY(0); }
 
 /* ─── Progress Bar ─── */
 .progress-wrap {
@@ -975,7 +987,7 @@ body {
 <header class="header">
   <div class="container">
     <a href="https://agmprotools.com" class="logo" style="text-decoration:none;">AGM <span>Pro Tools</span></a>
-    <div class="header-badge">Free Diagnostic</div>
+    <button class="header-cta" onclick="startQuiz()">Free Diagnostic</button>
   </div>
 </header>
 
@@ -995,11 +1007,11 @@ body {
   <div class="container">
     <div class="hero-badge animate-in stagger-1">
       <span class="dot"></span>
-      A free diagnostic from <strong>AGM Pro Tools</strong> — the Executive Intelligence Platform for home-service businesses
+      A free diagnostic for home-service businesses — no sales call, no strings
     </div>
     <div class="hero-eyebrow animate-in stagger-1">Contractor Automation Score</div>
-    <h1 class="animate-in stagger-2">We're About to Show You Exactly<br><em>Where You're Leaking Revenue</em></h1>
-    <p class="hero-sub animate-in stagger-3">Not a generic report. Not a tool recommendation. Your actual numbers — how much revenue is quietly slipping away every month, exactly what to fix first, and your personal Executive Briefing, spoken aloud. No charge. No sales call. Just your diagnostic.</p>
+    <h1 class="animate-in stagger-2" id="heroHeadline">Every Business Owner Thinks<br><em>They've Got This Covered.</em></h1>
+    <p class="hero-sub animate-in stagger-3" id="heroSub">Then they see the number. Find out exactly how much revenue slips through the cracks every month — unfollowed quotes, dead leads, reviews nobody asked for. Your score, your dollar figure, and the one thing to fix first, read aloud to you in your personal briefing. Free. 3 minutes. No sales call.</p>
     <div class="hero-stats animate-in stagger-3">
       <div class="hero-stat">
         <span class="hero-stat-num">3 min</span>
@@ -1015,7 +1027,7 @@ body {
       </div>
     </div>
     <button class="btn-primary animate-in stagger-4" onclick="startQuiz()">
-      Start My Assessment
+      Show Me the Leaks
       <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
     </button>
     <div class="hero-trust animate-in stagger-4">
@@ -1061,6 +1073,17 @@ body {
     </div>
   </div>
 </section>
+<script>
+/* cas-jobber variant hero (D1 Phase 2): /jobber sets window.CAS_VARIANT in <head>
+   (generate_jobber_landing.py). Same hook as the quiz pre-answer — no-op on root.
+   Runs inline right after the hero markup so there is no unswapped flash. */
+if (window.CAS_VARIANT === 'jobber') {
+  document.getElementById('heroSub').innerHTML =
+    'You run your jobs in Jobber. But Jobber runs the <em>job</em> — it doesn’t chase ' +
+    'the quote, win back the dead lead, or ask for the review. Connect and see exactly ' +
+    'what that’s costing you, in real dollars from your real data. Free. 3 minutes. No sales call.';
+}
+</script>
 
 <!-- ===== QUIZ ===== -->
 <section class="section" id="quizSection">

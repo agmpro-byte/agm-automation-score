@@ -1438,6 +1438,10 @@ function showSection(id) {
 }
 
 function startQuiz() {
+  // Separates a visitor who LANDED from one who BEGAN. Without this, a 1%
+  // completion rate cannot distinguish a page that fails to sell the quiz
+  // from a quiz that loses people midway — two different problems.
+  try { sendEventPixel('/quiz/started'); } catch (e) {}
   currentStep = 0;
   // cas-jobber variant (D1, 2026-07-15): /jobber sets window.CAS_VARIANT in
   // <head>. Marketplace-referred visitors get the software question
@@ -1566,11 +1570,26 @@ function selectBonus(bi, value, el) {
 }
 
 function nextStep() {
+  // DROP-OFF BEACON (2026-08-21). 261 pageviews had produced 3 completed
+  // quizzes and nothing recorded WHERE the other 258 stopped — the Pageviews
+  // tab carries path/referrer/utm/user-agent and no step column, confirmed on
+  // both the live sheet header and the writer at modal_automation_score.py.
+  // You cannot fix a funnel you cannot see, and shortening the quiz on a hunch
+  // is guessing dressed as a fix.
+  //
+  // Deliberately reuses the EXISTING /pixel endpoint and its `path` column
+  // instead of adding a tab or a schema: zero backend change, so the only risk
+  // surface is this file. Steps are 1-based and carry the total, so
+  // "/quiz/step/4-of-9" is readable in the sheet without a decoder.
+  // No PII — the beacon carries a position, never an answer.
+  try { sendEventPixel('/quiz/step/' + (currentStep + 1) + '-of-' + totalSteps); } catch (e) {}
   if (currentStep < totalSteps - 1) {
     currentStep++;
     renderStep();
   } else {
-    // Done with questions, go to email
+    // Done with questions, go to email — the last and most likely cliff, since
+    // this is where an anonymous visitor is first asked to identify themselves.
+    try { sendEventPixel('/quiz/reached-email-gate'); } catch (e) {}
     document.getElementById('progressWrap').classList.remove('visible');
     showSection('emailSection');
   }

@@ -1448,7 +1448,13 @@ function showSection(id) {
   }, 80);
 }
 
+// Plausible custom events — funnel KPI goals (AGM-618). No PII, event name only.
+function paEvent(name) {
+  try { window.plausible && window.plausible(name); } catch (e) {}
+}
+
 function startQuiz() {
+  paEvent('quiz_start');
   currentStep = 0;
   // cas-jobber variant (D1, 2026-07-15): /jobber sets window.CAS_VARIANT in
   // <head>. Marketplace-referred visitors get the software question
@@ -1582,6 +1588,7 @@ function nextStep() {
     renderStep();
   } else {
     // Done with questions, go to email
+    paEvent('quiz_email_gate');
     document.getElementById('progressWrap').classList.remove('visible');
     showSection('emailSection');
   }
@@ -1609,6 +1616,7 @@ function goBack() {
 
 function submitEmail(e) {
   e.preventDefault();
+  paEvent('quiz_complete');
   userData = {
     name: document.getElementById('userName').value,
     email: document.getElementById('userEmail').value,

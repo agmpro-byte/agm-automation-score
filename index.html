@@ -1443,7 +1443,13 @@ function showSection(id) {
   }, 80);
 }
 
+// Plausible custom events — funnel KPI goals (AGM-618). No PII, event name only.
+function paEvent(name) {
+  try { window.plausible && window.plausible(name); } catch (e) {}
+}
+
 function startQuiz() {
+  paEvent('quiz_start');
   // Separates a visitor who LANDED from one who BEGAN. Without this, a 1%
   // completion rate cannot distinguish a page that fails to sell the quiz
   // from a quiz that loses people midway — two different problems.
@@ -1596,6 +1602,7 @@ function nextStep() {
     // Done with questions, go to email — the last and most likely cliff, since
     // this is where an anonymous visitor is first asked to identify themselves.
     try { sendEventPixel('/quiz/reached-email-gate'); } catch (e) {}
+    paEvent('quiz_email_gate');
     document.getElementById('progressWrap').classList.remove('visible');
     showSection('emailSection');
   }
@@ -1623,6 +1630,7 @@ function goBack() {
 
 function submitEmail(e) {
   e.preventDefault();
+  paEvent('quiz_complete');
   userData = {
     name: document.getElementById('userName').value,
     email: document.getElementById('userEmail').value,

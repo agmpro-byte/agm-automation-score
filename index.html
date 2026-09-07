@@ -1367,6 +1367,26 @@ const bonusQuestions = [
     type: "select",
     options: ["Jobber", "Housecall Pro", "ServiceTitan", "Field Routes", "FieldPulse", "GoHighLevel", "HubSpot", "Salesforce", "Spreadsheets / Email", "None", "Other"]
   },
+  // CRM-agnostic intake (Milestone 1, 2026-09-06): the command center is
+  // hydrated from the prospect's ACCOUNTING software, not their FSM. These
+  // three are unscored — the 100-point math and five pillars are untouched.
+  {
+    question: "What do you use for accounting and invoicing?",
+    intro: "Every contractor has books, even without a CRM. This tells us what your command center can read on day one.",
+    type: "select",
+    options: ["QuickBooks Online", "QuickBooks Desktop", "Xero", "FreshBooks", "Wave", "Our field-service software handles invoicing", "Spreadsheets", "Other / not sure"]
+  },
+  {
+    question: "How do you write and sign contracts or proposals?",
+    intro: "Signed date drives revenue. This tells us whether we read your contracts or help you replace the process.",
+    type: "select",
+    options: ["Quotes inside our field-service software", "E-signature tool (DocuSign, PandaDoc, Proposify)", "Word or PDF we email", "Paper, in person", "We don\u2019t use written contracts"]
+  },
+  {
+    question: "Right now \u2014 without opening your accounting software \u2014 do you know how much you\u2019re owed and how old your oldest unpaid invoice is?",
+    type: "select",
+    options: ["No idea", "I could guess", "Roughly, from manual tracking", "Yes, I can see it on a dashboard"]
+  },
   {
     question: "How many crews or trucks do you run?",
     type: "select",
@@ -1655,7 +1675,7 @@ function submitEmail(e) {
     last_name: nameParts.slice(1).join(' ') || '',
     email: userData.email,
     phone: userData.phone,
-    company: bonusAnswers[10] || ''
+    company: bonusAnswers[13] || ''
   };
   // Send RAW POINT VALUES to the backend — it matches options by points
   // (calculate_score, since 2026-04-05). Do NOT convert to option indices:
@@ -1681,12 +1701,17 @@ function submitEmail(e) {
     monthly_jobs: bonusAnswers[2] || '',
     customer_db_size: bonusAnswers[3] || '',
     fsm_platform: (bonusAnswers[4] || '').toLowerCase().replace(/\s+/g, '_'),
-    crew_count: bonusAnswers[5] || '',
-    avg_ticket_value: bonusAnswers[6] || '',
-    close_rate: bonusAnswers[7] || '',
-    industry: bonusAnswers[8] || '',
-    biggest_headache: bonusAnswers[9] || '',
-    company_url: bonusAnswers[10] || '',
+    // Milestone 1 (2026-09-06): CRM-agnostic intake. accounting_platform is
+    // normalized exactly like fsm_platform; the other two ride raw.
+    accounting_platform: (bonusAnswers[5] || '').toLowerCase().replace(/\s+/g, '_'),
+    contract_method: bonusAnswers[6] || '',
+    finance_visibility: bonusAnswers[7] || '',
+    crew_count: bonusAnswers[8] || '',
+    avg_ticket_value: bonusAnswers[9] || '',
+    close_rate: bonusAnswers[10] || '',
+    industry: bonusAnswers[11] || '',
+    biggest_headache: bonusAnswers[12] || '',
+    company_url: bonusAnswers[13] || '',
     utm_source: utm.utm_source || '',
     utm_medium: utm.utm_medium || '',
     utm_campaign: utm.utm_campaign || '',
@@ -1984,7 +2009,7 @@ function renderResults() {
 }
 
 function startLaunchpadCheckout() {
-  const industryRaw = (bonusAnswers[8] || '').trim();
+  const industryRaw = (bonusAnswers[11] || '').trim();
   const industryMap = {
     'artificial turf': 'turf',
     'pest control': 'pest',
@@ -1993,7 +2018,7 @@ function startLaunchpadCheckout() {
   const contactName = userData.name || '';
 
   const checkoutPayload = {
-    business_name: bonusAnswers[10] || contactName + "'s Business",
+    business_name: bonusAnswers[13] || contactName + "'s Business",
     contact_name: contactName,
     contact_email: userData.email || '',
     city: '',
@@ -2061,7 +2086,7 @@ function openFullReport() {
   const projRecovery = Math.round(lossHigh * 0.6).toLocaleString();
   const projAnnual = (Math.round(lossHigh * 0.6) * 12).toLocaleString();
 
-  const lpParams = new URLSearchParams({name: userData.name||'', email: userData.email||'', phone: userData.phone||'', company: bonusAnswers[10]||''});
+  const lpParams = new URLSearchParams({name: userData.name||'', email: userData.email||'', phone: userData.phone||'', company: bonusAnswers[13]||''});
   if (window._agmContactId) lpParams.set('agm_contact_id', window._agmContactId);
   const launchpadUrl = 'https://agmpro-byte.github.io/agm-launchpad/?' + lpParams.toString();
 
@@ -2214,10 +2239,11 @@ h1{font-size:2.4rem;font-weight:700;letter-spacing:-0.02em;line-height:1.15;colo
     </div>
     <div class="card" style="align-self:start;">
       <h4 style="margin-bottom:0.75rem;font-size:0.7rem;">Business Snapshot</h4>
-      <div class="stat-item"><div class="stat-label">Avg. Ticket Value</div><div class="stat-value">${bonusAnswers[6] || 'Not provided'}</div></div>
-      <div class="stat-item"><div class="stat-label">Crew Size</div><div class="stat-value">${bonusAnswers[5] || 'Not provided'}</div></div>
+      <div class="stat-item"><div class="stat-label">Avg. Ticket Value</div><div class="stat-value">${bonusAnswers[9] || 'Not provided'}</div></div>
+      <div class="stat-item"><div class="stat-label">Crew Size</div><div class="stat-value">${bonusAnswers[8] || 'Not provided'}</div></div>
       <div class="stat-item"><div class="stat-label">Current Software</div><div class="stat-value">${bonusAnswers[4] || 'Not provided'}</div></div>
-      <div class="stat-item"><div class="stat-label">Biggest Headache</div><div class="stat-value">${bonusAnswers[9] || 'Not provided'}</div></div>
+      <div class="stat-item"><div class="stat-label">Accounting</div><div class="stat-value">${bonusAnswers[5] || 'Not provided'}</div></div>
+      <div class="stat-item"><div class="stat-label">Biggest Headache</div><div class="stat-value">${bonusAnswers[12] || 'Not provided'}</div></div>
     </div>
   </div>
   ${pageFooter(2)}
@@ -2290,7 +2316,7 @@ h1{font-size:2.4rem;font-weight:700;letter-spacing:-0.02em;line-height:1.15;colo
     <h3 style="color:#fff;">Ready to Close These Gaps?</h3>
     <p style="color:rgba(255,255,255,0.9);">AGM Pro Tools automates the exact gaps this report identified \u2014 lead response, quote follow-up, review requests, pipeline visibility, and reactivation. Live in under 10 minutes.</p>
     <a href="${launchpadUrl}" class="cta-link" style="background:#fff;color:#059669;border-radius:8px;padding:14px 32px;text-decoration:none;display:inline-block;font-weight:600;">Get Started with AGM Pro Tools \u2014 $297/mo</a>
-    <p class="text-xs mt-2" style="margin-bottom:8px;color:rgba(255,255,255,0.7);">Cancel anytime \u00b7 No setup fee \u00b7 Includes Jobber integration</p>
+    <p class="text-xs mt-2" style="margin-bottom:8px;color:rgba(255,255,255,0.7);">Cancel anytime \u00b7 No setup fee \u00b7 Works with the software you already run</p>
     <a href="https://link.agmpro.com/widget/bookings/pro-tools-strategy-call" class="cta-link" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.4);border-radius:8px;padding:12px 28px;text-decoration:none;display:inline-block;font-weight:500;font-size:14px;">Or Book a Free Strategy Call First</a>
     <p class="text-xs mt-2" style="margin-bottom:0;color:rgba(255,255,255,0.5);">Your full report — with your Audio Executive Briefing — has also been sent to <strong style="color:rgba(255,255,255,0.7);">${userData.email || 'your email'}</strong>.</p>
   </div>

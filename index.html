@@ -545,6 +545,32 @@ body {
   width: 100%;
 }
 
+/* ─── Number answers (discovery-v2) ─── */
+.num-row { display: flex; gap: 14px; flex-wrap: wrap; }
+.num-field { flex: 1 1 180px; min-width: 0; }
+.num-label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+.num-wrap {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 16px; background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  transition: border-color var(--transition);
+}
+.num-wrap:focus-within { border-color: var(--accent); }
+.num-wrap.is-unsure { opacity: 0.6; }
+.num-prefix, .num-unit { color: var(--text-muted); font-size: 16px; white-space: nowrap; }
+.num-input {
+  flex: 1; min-width: 0; padding: 16px 0; background: transparent; border: none; outline: none;
+  color: var(--text); font-family: inherit; font-size: 20px; font-weight: 600;
+}
+.num-input::placeholder { color: var(--text-muted); font-weight: 400; font-size: 16px; }
+.unsure-chip {
+  margin-top: 14px; padding: 9px 16px; border-radius: 999px; cursor: pointer;
+  background: transparent; border: 1px solid var(--border); color: var(--text-secondary);
+  font-family: inherit; font-size: 14px; transition: all var(--transition);
+}
+.unsure-chip:hover { border-color: var(--border-light); }
+.unsure-chip.selected { border-color: var(--accent); background: var(--accent-glow); color: var(--text); }
+
 .textarea-wrap textarea {
   width: 100%;
   min-height: 100px;
@@ -995,7 +1021,7 @@ body {
 <!-- Progress -->
 <div class="progress-wrap" id="progressWrap">
   <div class="progress-info">
-    <span class="progress-step" id="progressStep">Question 1 of 20</span>
+    <span class="progress-step" id="progressStep">Question 1 of 21</span>
     <span class="progress-pct" id="progressPct">0%</span>
   </div>
   <div class="progress-bar-track">
@@ -1012,14 +1038,14 @@ body {
     </div>
     <div class="hero-eyebrow animate-in stagger-1">Contractor Automation Score</div>
     <h1 class="animate-in stagger-2" id="heroHeadline">Every Business Owner Thinks<br><em>They've Got This Covered.</em></h1>
-    <p class="hero-sub animate-in stagger-3" id="heroSub">Then they see the number. Find out exactly how much revenue slips through the cracks every month — unfollowed quotes, dead leads, reviews nobody asked for. Your score, your dollar figure, and the one thing to fix first, read aloud to you in your personal briefing. Free. 3 minutes. No sales call.</p>
+    <p class="hero-sub animate-in stagger-3" id="heroSub">Then they see the number. See where revenue may be slipping — quotes nobody followed up, leads that waited, reviews nobody asked for. Your score, an estimate built from your own numbers, and where to look first, read aloud to you in your personal briefing. Free. About 4 minutes. No sales call.</p>
     <div class="hero-stats animate-in stagger-3">
       <div class="hero-stat">
-        <span class="hero-stat-num">3 min</span>
+        <span class="hero-stat-num">4 min</span>
         <span class="hero-stat-label">To complete</span>
       </div>
       <div class="hero-stat">
-        <span class="hero-stat-num">23</span>
+        <span class="hero-stat-num" id="heroQuestionCount">21</span>
         <span class="hero-stat-label">Questions</span>
       </div>
       <div class="hero-stat">
@@ -1049,7 +1075,7 @@ body {
     <!-- What you get -->
     <div class="hero-aside animate-in stagger-4">
       <div class="hero-aside-title">What you'll get</div>
-      <div class="hero-aside-heading">A personalized breakdown of where your business is leaking money — and exactly what to fix first.</div>
+      <div class="hero-aside-heading">A personalized read of where revenue may be slipping — and where to look first.</div>
       <div class="hero-aside-grid">
         <div class="hero-aside-item">
           <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
@@ -1057,11 +1083,11 @@ body {
         </div>
         <div class="hero-aside-item">
           <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-          <div>A <strong style="color:var(--text)">revenue leak estimate</strong> in real dollars that you could be losing each month</div>
+          <div>An <strong style="color:var(--text)">estimate from your own numbers</strong> of what may be at risk each month — labelled as an estimate</div>
         </div>
         <div class="hero-aside-item">
           <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-          <div>The <strong style="color:var(--text)">#1 system to fix first</strong> — ranked by revenue impact, not effort</div>
+          <div><strong style="color:var(--text)">Where to look first</strong> — based on what's actually holding the business back, not a sales pitch</div>
         </div>
         <div class="hero-aside-item">
           <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
@@ -1069,23 +1095,12 @@ body {
         </div>
       </div>
       <p class="hero-aside-footnote">
-        <strong>Who is AGM Pro Tools?</strong> We're the Executive Intelligence Platform for home-service businesses — we read the data already in your systems (Jobber, FieldRoutes, Salesforce, and other popular field service management software), tell you what to do next, then do it: lead nurture, quote follow-up, and review workflows. This diagnostic is the same framework we use with our live clients. Take it for yourself. No strings.
+        <strong>Who is AGM Pro Tools?</strong> We're the Executive Intelligence Platform for home-service businesses. Your software knows what happened yesterday; we tell you what to do tomorrow. We read the available data in the systems you already run — CRM and sales, field service and operations, accounting and payments — and turn it into clear management priorities. This diagnostic is the same framework we use in the businesses we operate and work with. Take it for yourself. No strings.
       </p>
     </div>
   </div>
 </section>
-<script>
-/* cas-jobber variant hero (D1 Phase 2): /jobber sets window.CAS_VARIANT in <head>
-   (generate_jobber_landing.py). Same hook as the quiz pre-answer — no-op on root.
-   Runs inline right after the hero markup so there is no unswapped flash. */
-if (window.CAS_VARIANT === 'jobber') {
-  document.getElementById('heroSub').innerHTML =
-    'You run your jobs in Jobber. But Jobber runs the <em>job</em> — it doesn’t chase ' +
-    'the quote, win back the dead lead, or ask for the review. See exactly what that’s ' +
-    'costing you — your score, your dollar figure, and the one thing to fix first. ' +
-    'Free. 3 minutes. No sales call.';
-}
-</script>
+<!-- cas-jobber variant hero removed 2026-09-25 (Jobber removed from the build; /jobber redirects to the root). -->
 
 <!-- ===== QUIZ ===== -->
 <section class="section" id="quizSection">
@@ -1115,6 +1130,10 @@ if (window.CAS_VARIANT === 'jobber') {
         <div class="form-group">
           <label class="form-label" for="userPhone">Phone <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
           <input class="form-input" type="tel" id="userPhone" placeholder="(555) 123-4567">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="userCompany">Company or website <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+          <input class="form-input" type="text" id="userCompany" placeholder="Your company name or website">
         </div>
         <div class="quiz-nav">
           <button type="button" class="btn-back" onclick="goBack()">
@@ -1165,6 +1184,303 @@ if (window.CAS_VARIANT === 'jobber') {
 
 <!-- Footer -->
 <div class="footer">&copy; 2026 AGM Pro Tools. All rights reserved.</div>
+
+<!-- CAS discovery questionnaire (discovery-v2). EDIT QUESTIONS HERE — the
+     page, progress bar, hero count and payload all derive from this. A
+     top-level JSON ARRAY on purpose: quiz_healthcheck runs `node --check`
+     over every inline script, and an array literal is valid JS. -->
+<script type="application/json" id="casQuestions">
+[
+ {
+  "section": "Your business",
+  "intro": "First, the shape of the business. A rough number is fine for every question, and “not sure” is a real answer. Nothing here is a verdict — it tells us where to look.",
+  "questions": [
+   {
+    "id": "trades",
+    "type": "multi",
+    "q": "What kind of work do you do?",
+    "help": "Pick all that apply.",
+    "options": [
+     "Artificial Turf",
+     "Landscaping",
+     "Hardscape / Pavers",
+     "Pest Control",
+     "HVAC",
+     "Plumbing",
+     "Cleaning",
+     "Pool Service",
+     "Handyman",
+     "Electrical",
+     "Roofing",
+     "Fencing",
+     "Other"
+    ],
+    "feeds": "Dashboard header; job types on every panel"
+   },
+   {
+    "id": "crews",
+    "type": "number",
+    "q": "How many install crews or trucks do you run?",
+    "help": "A rough number is fine.",
+    "min": 0,
+    "feeds": "Schedule & Crew tab; appointments panel; capacity read"
+   },
+   {
+    "id": "booked_weeks",
+    "type": "number",
+    "q": "How many weeks out are you booked right now?",
+    "help": "Today, roughly.",
+    "min": 0,
+    "unit": "weeks",
+    "feeds": "Primary-constraint read (fulfillment); Schedule & Crew tab"
+   }
+  ]
+ },
+ {
+  "section": "Lead flow",
+  "intro": "Next, how new work finds you — and how fast it hears back.",
+  "questions": [
+   {
+    "id": "leads_per_month",
+    "type": "number",
+    "q": "How many new leads come in each month?",
+    "help": "Calls, forms, referrals — everything. A rough number is fine.",
+    "min": 0,
+    "feeds": "Cold leads panel; Speed to Lead exposure"
+   },
+   {
+    "id": "serious_of_10",
+    "type": "number",
+    "q": "Out of 10 leads, how many are serious?",
+    "help": "Not tire-kickers or wrong-fit calls. Your gut number is fine.",
+    "min": 0,
+    "max": 10,
+    "step": 0.5,
+    "unit": "in 10",
+    "feeds": "Discounts junk before any follow-up exposure is computed"
+   },
+   {
+    "id": "lead_sources",
+    "type": "multi",
+    "q": "Where do those leads come from?",
+    "help": "Pick all that apply.",
+    "options": [
+     "Google Ads",
+     "SEO / website",
+     "Customer referrals",
+     "Partner or contractor referrals",
+     "Associations, HOAs or property managers",
+     "Facebook / Instagram",
+     "TV / radio / print",
+     "Home shows",
+     "Other"
+    ],
+    "feeds": "Cold leads panel rows (by source); Demand-constraint channel view"
+   },
+   {
+    "id": "response_time",
+    "type": "select",
+    "q": "When a new lead comes in, how long until a real person gets back to them?",
+    "help": "Think about last week, not your best day.",
+    "options": [
+     "Under 5 minutes",
+     "Under an hour",
+     "Same day",
+     "Next day",
+     "2+ days",
+     "Not sure"
+    ],
+    "feeds": "Speed to Lead pillar; leads with no reply after 24h"
+   }
+  ]
+ },
+ {
+  "section": "Quotes & closing",
+  "intro": "Now the work already in motion: quotes out, and what happens after they go.",
+  "questions": [
+   {
+    "id": "quotes_per_month",
+    "type": "number",
+    "q": "How many quotes or estimates go out each month?",
+    "help": "A rough number is fine.",
+    "min": 0,
+    "feeds": "Wins panel; cold quotes panel; Quote Follow-Up exposure"
+   },
+   {
+    "id": "close_rate_of_10",
+    "type": "number",
+    "q": "Out of every 10 quotes, how many turn into a job?",
+    "help": "Your gut number is fine.",
+    "min": 0,
+    "max": 10,
+    "step": 0.5,
+    "unit": "in 10",
+    "feeds": "Wins panel close rate; every estimate"
+   },
+   {
+    "id": "avg_job_value",
+    "type": "money",
+    "q": "What's your average job worth?",
+    "help": "A rough number is fine.",
+    "min": 0,
+    "feeds": "Wins panel avg ticket; every estimate"
+   },
+   {
+    "id": "followup_touches",
+    "type": "select",
+    "q": "After a quote goes out and goes quiet, how many times does the homeowner hear from you?",
+    "options": [
+     "None — we wait for them to call",
+     "1",
+     "2",
+     "3",
+     "4 or more",
+     "Not sure"
+    ],
+    "feeds": "Quote Follow-Up pillar; cold quotes panel"
+   },
+   {
+    "id": "open_quotes",
+    "type": "pair",
+    "q": "How many quotes are open right now — and roughly what are they worth together?",
+    "help": "Waiting on a yes or no. Guesses are fine.",
+    "fields": [
+     {
+      "id": "open_quotes_count",
+      "label": "Open quotes",
+      "type": "number"
+     },
+     {
+      "id": "open_quotes_value",
+      "label": "Total value",
+      "type": "money"
+     }
+    ],
+    "feeds": "Cold quotes panel: quotes sitting, value sitting"
+   }
+  ]
+ },
+ {
+  "section": "Reviews & past customers",
+  "intro": "Your reputation, and the customers you've already won.",
+  "questions": [
+   {
+    "id": "google_reviews",
+    "type": "pair",
+    "optional": true,
+    "q": "How many Google reviews do you have, and what's the star rating?",
+    "help": "Optional — we can look it up.",
+    "fields": [
+     {
+      "id": "google_review_count",
+      "label": "Reviews",
+      "type": "number"
+     },
+     {
+      "id": "google_rating",
+      "label": "Stars",
+      "type": "number",
+      "max": 5,
+      "step": 0.1
+     }
+    ],
+    "feeds": "Reviews panel; Review Generation pillar"
+   },
+   {
+    "id": "review_ask",
+    "type": "select",
+    "q": "How do you ask customers for reviews today?",
+    "options": [
+     "Automatic text or email after every job",
+     "A rep sends a review link when they remember",
+     "We ask in person",
+     "We offer a discount or gift for a review",
+     "We don't really ask",
+     "Not sure"
+    ],
+    "feeds": "Reviews panel: missed asks; Review Generation pillar"
+   },
+   {
+    "id": "past_customers",
+    "type": "number",
+    "q": "How many past customers are on your list?",
+    "help": "Anyone you've done a job for. A rough number is fine.",
+    "min": 0,
+    "feeds": "Dormant customers panel"
+   },
+   {
+    "id": "past_customer_contact",
+    "type": "select",
+    "q": "When did most past customers last hear from you?",
+    "options": [
+     "Within the last 3 months",
+     "3–12 months ago",
+     "Over a year ago",
+     "Only when they call us",
+     "Not sure"
+    ],
+    "feeds": "Dormant customers panel; Customer Reactivation pillar"
+   }
+  ]
+ },
+ {
+  "section": "How you see the business",
+  "intro": "Last section. Where the work lives today — and what you wish you could see without asking.",
+  "questions": [
+   {
+    "id": "pipeline_lives_in",
+    "type": "multi",
+    "q": "Where do your leads and quotes live today?",
+    "help": "Pick all that apply.",
+    "options": [
+     "A CRM or field-service software",
+     "Spreadsheets",
+     "Email inbox",
+     "Whiteboard or paper",
+     "Mostly in people's heads"
+    ],
+    "feeds": "Pipeline Visibility pillar; information read"
+   },
+   {
+    "id": "appt_confirmation",
+    "type": "select",
+    "q": "How do customers confirm estimate and install appointments?",
+    "options": [
+     "Automatic text or email confirmation",
+     "We call to confirm",
+     "They're just on the calendar",
+     "Not sure"
+    ],
+    "feeds": "Appointments panel: no-show risk"
+   },
+   {
+    "id": "hunt_for",
+    "type": "text",
+    "q": "What do you have to hunt for, or chase people for, to know how the business is doing?",
+    "help": "In your own words.",
+    "placeholder": "e.g. which quotes are still open, what the crews finished, who owes us money",
+    "feeds": "Information read; Owner Intelligence tab; interview prompts"
+   },
+   {
+    "id": "morning_wish",
+    "type": "text",
+    "q": "What do you wish you knew every morning before your day starts?",
+    "help": "In your own words — this decides what your dashboard shows first.",
+    "placeholder": "e.g. which quotes are going cold, what's booked next month, who hasn't been called back",
+    "feeds": "Owner Intelligence tab headline; dashboard headline"
+   },
+   {
+    "id": "open_question",
+    "type": "text",
+    "optional": true,
+    "q": "What haven't we asked about your business that we should understand?",
+    "help": "Optional — the thing no list would think to ask.",
+    "feeds": "Interview prompts (case-local signal)"
+   }
+  ]
+ }
+]
+</script>
 
 <script>
 // ─────────────────────────────
@@ -1217,208 +1533,29 @@ if (window.CAS_VARIANT === 'jobber') {
 // DATA
 // ─────────────────────────────
 
-// Section transitions \u2014 shown before the first question of each pillar
-const sectionTransitions = {
-  "Speed to Lead": "Let\u2019s start with the moment a lead first reaches out. This is where most jobs are won or lost \u2014 before your team even knows about it.",
-  "Quote Follow-Up": "Good. Now let\u2019s look at what happens after the quote goes out. This is where most contractors quietly lose the jobs they already earned.",
-  "Review Generation": "Next \u2014 your online reputation. This is the first thing every homeowner sees before they ever call you.",
-  "Pipeline Visibility": "Now the big picture. Can you actually see what\u2019s happening across your entire pipeline \u2014 or are you flying blind?",
-  "Customer Reactivation": "Last scored section. The customers you\u2019ve already won \u2014 are they hearing from you, or are they hearing from your competitors?",
-  "_quantitative": "Almost done. These last few questions help us calculate the actual dollar impact \u2014 the more specific you are, the more useful your report becomes."
-};
+// ─────────────────────────────
+// QUESTIONS — discovery-v2 (2026-09-25)
+// ─────────────────────────────
+// The questionnaire is DATA: the JSON block #casQuestions above. Reorder,
+// cut or reword a question there and the page, the progress bar, the hero
+// count and the payload all follow — nothing else to edit. The backend
+// (modal_automation_score.py) reads the answers by `id`; option TEXT for
+// scored selects must match its tables exactly, and the funnel harness
+// (t_discovery_options_match_quiz) fails the deploy gate on any drift.
+//
+// Every question exists to hydrate a panel of the dashboard ("feeds" on
+// each question). A question that feeds nothing gets cut, not kept.
+const QUIZ_VERSION = 'discovery-v2';
+const NOT_SURE = 'not_sure';
+const CAS_SECTIONS = JSON.parse(document.getElementById('casQuestions').textContent);
+const QUESTIONS = [];
+CAS_SECTIONS.forEach(function (sec) {
+  sec.questions.forEach(function (q, i) {
+    QUESTIONS.push(Object.assign({}, q, { section: sec.section, sectionIntro: i === 0 ? sec.intro : '' }));
+  });
+});
 
-const scoredQuestions = [
-  // \u2500\u2500 SPEED TO LEAD \u2500\u2500
-  {
-    category: "Speed to Lead",
-    catIndex: 0,
-    question: "Think about last week. A new lead comes in \u2014 someone fills out your website form or calls the office. How long before they actually hear back from a real person?",
-    options: [
-      { text: "Under 5 minutes", value: 20 },
-      { text: "5\u201330 minutes", value: 15 },
-      { text: "30 minutes \u2013 2 hours", value: 10 },
-      { text: "Same day", value: 5 },
-      { text: "Next day or later", value: 0 }
-    ]
-  },
-  // \u2500\u2500 QUOTE FOLLOW-UP \u2500\u2500
-  {
-    category: "Quote Follow-Up",
-    catIndex: 1,
-    question: "A quote goes out on Monday. The homeowner says \u2018let me think about it.\u2019 What happens on Tuesday? Wednesday? The week after?",
-    options: [
-      { text: "Automated sequence within 24 hours", value: 10 },
-      { text: "Manual call within 48 hours", value: 6 },
-      { text: "We wait for them to call back", value: 2 },
-      { text: "No follow-up process", value: 0 }
-    ]
-  },
-  {
-    category: "Quote Follow-Up",
-    catIndex: 1,
-    question: "Be honest \u2014 that quote you sent last Wednesday that never got a response. What actually happened next?",
-    options: [
-      { text: "An automated follow-up sequence is already running", value: 10 },
-      { text: "Someone on the team will probably call them", value: 7 },
-      { text: "We might send one follow-up if we remember", value: 4 },
-      { text: "Nothing \u2014 we move on to the next job", value: 0 }
-    ]
-  },
-  // \u2500\u2500 REVIEW GENERATION \u2500\u2500
-  {
-    category: "Review Generation",
-    catIndex: 2,
-    question: "The crew just finished a job. The homeowner\u2019s thrilled \u2014 they\u2019re walking the yard, smiling, shaking hands. What happens next to turn that moment into a Google review?",
-    options: [
-      { text: "Automated SMS/email within 24 hours", value: 10 },
-      { text: "A rep sends the request manually", value: 6 },
-      { text: "We ask in person sometimes", value: 3 },
-      { text: "No review process", value: 0 }
-    ]
-  },
-  {
-    category: "Review Generation",
-    catIndex: 2,
-    question: "Pull out your phone and Google your company name. What does a homeowner see?",
-    options: [
-      { text: "100+ reviews, 4.5+ stars, recent activity", value: 10 },
-      { text: "Decent reviews but not many recent ones", value: 6 },
-      { text: "A few reviews, nothing impressive", value: 3 },
-      { text: "I\u2019m not sure \u2014 I haven\u2019t checked lately", value: 0 }
-    ]
-  },
-  // \u2500\u2500 PIPELINE VISIBILITY \u2500\u2500
-  {
-    category: "Pipeline Visibility",
-    catIndex: 3,
-    question: "Right now \u2014 without opening any software \u2014 do you know how many open quotes are sitting out there waiting for a yes or no?",
-    options: [
-      { text: "Yes, real-time dashboard", value: 10 },
-      { text: "Yes, but across multiple systems", value: 6 },
-      { text: "Spreadsheet or whiteboard", value: 3 },
-      { text: "No \u2014 it\u2019s in people\u2019s heads", value: 0 }
-    ]
-  },
-  {
-    category: "Pipeline Visibility",
-    catIndex: 3,
-    question: "If I asked you right now how many open quotes are over 7 days old, could you tell me?",
-    options: [
-      { text: "Yes \u2014 I can pull that up in seconds", value: 10 },
-      { text: "I\u2019d have to dig through my software to figure it out", value: 6 },
-      { text: "I\u2019d have to ask someone on my team", value: 3 },
-      { text: "No \u2014 I have no idea", value: 0 }
-    ]
-  },
-  // \u2500\u2500 CUSTOMER REACTIVATION \u2500\u2500
-  {
-    category: "Customer Reactivation",
-    catIndex: 4,
-    question: "It\u2019s 6:30 on a Friday. Someone calls your office number about a project they want done before summer. What do they hear?",
-    options: [
-      { text: "Automated text-back and voicemail capture within 60 seconds", value: 10 },
-      { text: "They get a voicemail and we call back next business day", value: 5 },
-      { text: "It rings out or goes to a generic message", value: 2 },
-      { text: "We don\u2019t get after-hours calls", value: 0 }
-    ]
-  },
-  {
-    category: "Customer Reactivation",
-    catIndex: 4,
-    question: "Think about someone you did a great job for a year ago. They loved the work. Have they heard from you since?",
-    options: [
-      { text: "We reach out automatically based on their service date", value: 10 },
-      { text: "We send something out a few times a year", value: 5 },
-      { text: "Only when they call us", value: 3 },
-      { text: "I honestly couldn\u2019t tell you", value: 0 }
-    ]
-  }
-];
-
-const bonusQuestions = [
-  // \u2500\u2500 QUANTITATIVE (new \u2014 captures dashboard metrics) \u2500\u2500
-  {
-    question: "Roughly how many new leads or inquiries come into your business each month?",
-    intro: "This helps us estimate how many leads may be going to your competitors before your team responds.",
-    type: "select",
-    options: ["Under 10", "10\u201325", "25\u201350", "50\u2013100", "100+"]
-  },
-  {
-    question: "In a typical month, roughly how many quotes or estimates does your team send out?",
-    intro: "This tells us how much revenue is sitting in unworked quotes right now.",
-    type: "select",
-    options: ["Under 10", "10\u201325", "25\u201350", "50\u2013100", "100+"]
-  },
-  {
-    question: "How many jobs does your team complete in a typical month?",
-    intro: "This lets us calculate your review conversion rate \u2014 and how fast we can improve it.",
-    type: "select",
-    options: ["Under 10", "10\u201325", "25\u201350", "50\u2013100", "100+"]
-  },
-  {
-    question: "Roughly how many past customers or clients are in your system?",
-    intro: "This is your cheapest source of new revenue. We\u2019ll show you how much is sitting there.",
-    type: "select",
-    options: ["Under 50", "50\u2013200", "200\u2013500", "500\u20131,000", "1,000+"]
-  },
-  // \u2500\u2500 INTAKE (existing + new) \u2500\u2500
-  {
-    question: "What software are you using to run your business?",
-    type: "select",
-    options: ["Jobber", "Housecall Pro", "ServiceTitan", "Field Routes", "FieldPulse", "GoHighLevel", "HubSpot", "Salesforce", "Spreadsheets / Email", "None", "Other"]
-  },
-  // CRM-agnostic intake (Milestone 1, 2026-09-06): the command center is
-  // hydrated from the prospect's ACCOUNTING software, not their FSM. These
-  // three are unscored — the 100-point math and five pillars are untouched.
-  {
-    question: "What do you use for accounting and invoicing?",
-    intro: "Every contractor has books, even without a CRM. This tells us what your command center can read on day one.",
-    type: "select",
-    options: ["QuickBooks Online", "QuickBooks Desktop", "Xero", "FreshBooks", "Wave", "Our field-service software handles invoicing", "Spreadsheets", "Other / not sure"]
-  },
-  {
-    question: "How do you write and sign contracts or proposals?",
-    intro: "Signed date drives revenue. This tells us whether we read your contracts or help you replace the process.",
-    type: "select",
-    options: ["Quotes inside our field-service software", "E-signature tool (DocuSign, PandaDoc, Proposify)", "Word or PDF we email", "Paper, in person", "We don\u2019t use written contracts"]
-  },
-  {
-    question: "Right now \u2014 without opening your accounting software \u2014 do you know how much you\u2019re owed and how old your oldest unpaid invoice is?",
-    type: "select",
-    options: ["No idea", "I could guess", "Roughly, from manual tracking", "Yes, I can see it on a dashboard"]
-  },
-  {
-    question: "How many crews or trucks do you run?",
-    type: "select",
-    options: ["1\u20133", "4\u201310", "11\u201325", "25+"]
-  },
-  {
-    question: "What\u2019s your average job ticket value?",
-    type: "select",
-    options: ["Under $500", "$500\u2013$2,000", "$2,000\u2013$5,000", "$5,000\u2013$15,000", "$15,000+"]
-  },
-  {
-    question: "Out of every 10 quotes you send, roughly how many turn into a job?",
-    intro: "Even a rough guess works. This is the single most revealing number in your business.",
-    type: "select",
-    options: ["1\u20132", "3\u20134", "5\u20136", "7\u20138", "9\u201310"]
-  },
-  {
-    question: "What type of field service business do you run?",
-    type: "select",
-    options: ["Artificial Turf", "Pest Control", "HVAC", "Plumbing", "Landscaping", "Cleaning", "Pool Service", "Handyman", "Electrical", "Roofing", "Fencing", "Other"]
-  },
-  {
-    question: "What\u2019s the one thing slowing your business down right now?",
-    type: "text"
-  },
-  {
-    question: "What\u2019s your company name or website URL?",
-    intro: "We\u2019ll pull your Google reviews, star rating, and online visibility automatically \u2014 so your report shows real data, not guesses.",
-    type: "text"
-  }
-];
-
+// Kept for the (retired) full-report renderer below — pillar names/max only.
 const categories = [
   { name: "Speed to Lead", max: 20 },
   { name: "Quote Follow-Up", max: 20 },
@@ -1428,22 +1565,37 @@ const categories = [
 ];
 
 const tiers = [
-  { min: 80, label: "Automation Leader", color: "#22c55e", desc: "Your systems are dialed in. Here\u2019s a breakdown of where you stand and where the remaining edge is hiding." },
-  { min: 60, label: "Growth Ready", color: "#3b82f6", desc: "You\u2019ve built solid systems, but there are specific gaps costing you real revenue. Here\u2019s exactly where your answers tell us the money is leaking." },
-  { min: 40, label: "Opportunity Zone", color: "#eab308", desc: "Your answers reveal significant automation gaps across multiple areas. Here\u2019s a complete breakdown of what\u2019s costing you jobs and revenue every week." },
-  { min: 20, label: "At Risk", color: "#f97316", desc: "You\u2019re losing quotes, reviews, and repeat business every week. Here\u2019s a complete breakdown of what your answers tell us \u2014 and what needs to change." },
-  { min: 0, label: "Critical", color: "#ef4444", desc: "Your competitors are winning the jobs you\u2019re quoting because their systems do what yours can\u2019t. Here\u2019s a full breakdown of every gap your answers revealed." }
+  { min: 80, label: "Automation Leader", color: "#22c55e", desc: "Your systems are dialed in. Here’s a breakdown of where you stand and where the remaining edge is hiding." },
+  { min: 60, label: "Growth Ready", color: "#3b82f6", desc: "You’ve built solid systems, but there are specific gaps costing you real revenue. Here’s exactly where your answers tell us the money is leaking." },
+  { min: 40, label: "Opportunity Zone", color: "#eab308", desc: "Your answers reveal significant automation gaps across multiple areas. Here’s a complete breakdown of what’s costing you jobs and revenue every week." },
+  { min: 20, label: "At Risk", color: "#f97316", desc: "Several areas have no system behind them yet. Here is what your answers show, area by area." },
+  { min: 0, label: "Critical", color: "#ef4444", desc: "Most of the areas we asked about run without a system today. Here is a plain description of each gap your answers show." }
 ];
 
 // ─────────────────────────────
 // STATE
 // ─────────────────────────────
 
-const totalSteps = scoredQuestions.length + bonusQuestions.length;
-let currentStep = 0; // 0-indexed across scored + bonus
-let answers = new Array(scoredQuestions.length).fill(null);
-let bonusAnswers = new Array(bonusQuestions.length).fill(null);
+// Derived from the data, never typed: the live page once said "Question 1 of
+// 20" under a hero promising "23 QUESTIONS" (2026-09-25).
+const totalSteps = QUESTIONS.length;
+let currentStep = 0;
+let answers = {};   // id -> string | number | 'not_sure' | string[]
 let userData = {};
+
+(function paintCounts() {
+  try {
+    var el = document.getElementById('heroQuestionCount');
+    if (el) el.textContent = String(totalSteps);
+    var ps = document.getElementById('progressStep');
+    if (ps) ps.textContent = 'Question 1 of ' + totalSteps;
+  } catch (e) {}
+})();
+
+function escHtml(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
 
 // ─────────────────────────────
 // NAVIGATION
@@ -1475,10 +1627,6 @@ function startQuiz() {
   // from a quiz that loses people midway — two different problems.
   try { sendEventPixel('/quiz/started'); } catch (e) {}
   currentStep = 0;
-  // cas-jobber variant (D1, 2026-07-15): /jobber sets window.CAS_VARIANT in
-  // <head>. Marketplace-referred visitors get the software question
-  // pre-answered (still shown + changeable). Root: CAS_VARIANT undefined, no-op.
-  if (window.CAS_VARIANT === 'jobber' && bonusAnswers[4] === null) bonusAnswers[4] = 'Jobber';
   showSection('quizSection');
   document.getElementById('progressWrap').classList.add('visible');
   renderStep();
@@ -1491,86 +1639,86 @@ function updateProgress() {
   document.getElementById('progressPct').textContent = pct + '%';
 }
 
+function isAnswered(q) {
+  if (q.optional) return true;
+  if (q.type === 'pair') {
+    return q.fields.every(f => answers[f.id] !== undefined && answers[f.id] !== '');
+  }
+  const v = answers[q.id];
+  if (q.type === 'multi') return Array.isArray(v) && v.length > 0;
+  if (q.type === 'text') return typeof v === 'string' && v.trim().length > 0;
+  return v !== undefined && v !== null && v !== '';
+}
+
+function numberInput(id, label, type, spec) {
+  const v = answers[id];
+  const unsure = v === NOT_SURE;
+  const shown = (v === undefined || unsure) ? '' : v;
+  return `
+    <div class="num-field">
+      ${label ? `<label class="num-label" for="in_${id}">${escHtml(label)}</label>` : ''}
+      <div class="num-wrap ${type === 'money' ? 'is-money' : ''} ${unsure ? 'is-unsure' : ''}">
+        ${type === 'money' ? '<span class="num-prefix">$</span>' : ''}
+        <input id="in_${id}" class="num-input" type="number" inputmode="decimal"
+          min="${spec.min != null ? spec.min : 0}" ${spec.max != null ? `max="${spec.max}"` : ''}
+          step="${spec.step || 'any'}" placeholder="${unsure ? 'Not sure' : 'A rough number'}"
+          value="${escHtml(shown)}" data-num="${id}">
+        ${spec.unit ? `<span class="num-unit">${escHtml(spec.unit)}</span>` : ''}
+      </div>
+    </div>`;
+}
+
 function renderStep() {
   updateProgress();
   const card = document.getElementById('quizCard');
+  const q = QUESTIONS[currentStep];
+  const isFirstOfSection = currentStep === 0 || q.section !== QUESTIONS[currentStep - 1].section;
 
-  if (currentStep < scoredQuestions.length) {
-    // Scored question
-    const q = scoredQuestions[currentStep];
-    const selectedVal = answers[currentStep];
-    const isFirstOfSection = currentStep === 0 || q.category !== scoredQuestions[currentStep - 1].category;
-    const transitionText = isFirstOfSection ? (sectionTransitions[q.category] || '') : '';
-    card.innerHTML = `
-      <div class="quiz-number">Question ${currentStep + 1} of ${totalSteps}</div>
-      <div class="quiz-category">${q.category}</div>
-      ${transitionText ? `<div class="section-transition">${transitionText}</div>` : ''}
-      <div class="quiz-question">${q.question}</div>
-      <div class="option-list">
-        ${q.options.map((o, i) => `
-          <label class="option ${selectedVal === o.value ? 'selected' : ''}" onclick="selectScored(${currentStep}, ${o.value}, this)">
-            <input type="radio" name="q${currentStep}" value="${o.value}" ${selectedVal === o.value ? 'checked' : ''}>
-            <span class="option-radio"></span>
-            <span class="option-text">${o.text}</span>
-          </label>
-        `).join('')}
-      </div>
-      <div class="quiz-nav">
-        ${currentStep > 0 ? `
-          <button class="btn-back" onclick="goBack()">
-            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/></svg>
-            Back
-          </button>
-        ` : '<div></div>'}
-        <button class="btn-primary" id="nextBtn" onclick="nextStep()" ${selectedVal === null ? 'disabled style="opacity:0.4;pointer-events:none"' : ''}>
-          Next
-          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
-        </button>
-      </div>
-    `;
+  let inputHTML = '';
+  if (q.type === 'select' || q.type === 'multi') {
+    const cur = answers[q.id];
+    inputHTML = `<div class="select-grid" data-q="${q.id}" data-multi="${q.type === 'multi' ? 1 : 0}">` +
+      q.options.map((o, i) => {
+        const on = q.type === 'multi' ? (Array.isArray(cur) && cur.includes(o)) : cur === o;
+        return `<div class="select-option ${on ? 'selected' : ''}" data-i="${i}" role="button" tabindex="0">${escHtml(o)}</div>`;
+      }).join('') + '</div>';
+  } else if (q.type === 'number' || q.type === 'money') {
+    inputHTML = `<div class="num-row">${numberInput(q.id, '', q.type, q)}</div>`;
+  } else if (q.type === 'pair') {
+    inputHTML = `<div class="num-row">${q.fields.map(f => numberInput(f.id, f.label, f.type, f)).join('')}</div>`;
   } else {
-    // Bonus question
-    const bi = currentStep - scoredQuestions.length;
-    const bq = bonusQuestions[bi];
-    const selectedVal = bonusAnswers[bi];
+    inputHTML = `
+      <div class="textarea-wrap">
+        <textarea id="textAnswer" placeholder="${escHtml(q.placeholder || 'Type your answer here...')}">${escHtml(answers[q.id] || '')}</textarea>
+      </div>`;
+  }
+  const numeric = q.type === 'number' || q.type === 'money' || q.type === 'pair';
+  const unsureOn = numeric && (q.type === 'pair'
+    ? q.fields.every(f => answers[f.id] === NOT_SURE)
+    : answers[q.id] === NOT_SURE);
 
-    let inputHTML = '';
-    if (bq.type === 'select') {
-      inputHTML = `
-        <div class="select-grid">
-          ${bq.options.map(o => `
-            <div class="select-option ${selectedVal === o ? 'selected' : ''}" onclick="selectBonus(${bi}, '${o}', this)">${o}</div>
-          `).join('')}
-        </div>
-      `;
-    } else {
-      inputHTML = `
-        <div class="textarea-wrap">
-          <textarea id="bonusText" placeholder="Type your answer here..." oninput="bonusAnswers[${bi}] = this.value; enableNext()">${selectedVal || ''}</textarea>
-        </div>
-      `;
-    }
-
-    const showQuantTransition = bi === 0 && sectionTransitions._quantitative;
-    card.innerHTML = `
-      <div class="quiz-number">Question ${currentStep + 1} of ${totalSteps}</div>
-      <div class="intake-title">Your Business</div>
-      ${showQuantTransition ? `<div class="section-transition">${sectionTransitions._quantitative}</div>` : ''}
-      ${bq.intro ? `<div class="quiz-intro">${bq.intro}</div>` : ''}
-      <div class="intake-q">${bq.question}</div>
-      ${inputHTML}
-      <div class="quiz-nav">
+  card.innerHTML = `
+    <div class="quiz-number">Question ${currentStep + 1} of ${totalSteps}</div>
+    <div class="quiz-category">${escHtml(q.section)}</div>
+    ${isFirstOfSection && q.sectionIntro ? `<div class="section-transition">${escHtml(q.sectionIntro)}</div>` : ''}
+    <div class="intake-q">${escHtml(q.q)}</div>
+    ${q.help ? `<div class="quiz-intro">${escHtml(q.help)}</div>` : ''}
+    ${inputHTML}
+    ${numeric ? `<button type="button" class="unsure-chip ${unsureOn ? 'selected' : ''}" id="unsureBtn">Not sure</button>` : ''}
+    <div class="quiz-nav">
+      ${currentStep > 0 ? `
         <button class="btn-back" onclick="goBack()">
           <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/></svg>
           Back
-        </button>
-        <button class="btn-primary" id="nextBtn" onclick="nextStep()" ${!selectedVal && bq.type === 'select' ? 'disabled style="opacity:0.4;pointer-events:none"' : ''}>
-          ${currentStep === totalSteps - 1 ? 'Continue' : 'Next'}
-          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
-        </button>
-      </div>
-    `;
-  }
+        </button>` : '<div></div>'}
+      <button class="btn-primary" id="nextBtn" onclick="nextStep()">
+        ${currentStep === totalSteps - 1 ? 'Continue' : (q.optional && !isAnswered(Object.assign({}, q, { optional: false })) ? 'Skip' : 'Next')}
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+      </button>
+    </div>
+  `;
+  wireStep(q);
+  syncNext();
 
   // Quick fade-in
   card.style.opacity = 0;
@@ -1582,38 +1730,80 @@ function renderStep() {
   });
 }
 
-function enableNext() {
+// Event wiring by data attributes — never inline handlers built from option
+// text (an apostrophe in "They're just on the calendar" would break them).
+function wireStep(q) {
+  const card = document.getElementById('quizCard');
+  const grid = card.querySelector('.select-grid');
+  if (grid) {
+    const pick = el => {
+      const opt = q.options[+el.dataset.i];
+      if (q.type === 'multi') {
+        let cur = Array.isArray(answers[q.id]) ? answers[q.id].slice() : [];
+        cur = cur.includes(opt) ? cur.filter(x => x !== opt) : cur.concat([opt]);
+        answers[q.id] = cur;
+        el.classList.toggle('selected');
+      } else {
+        answers[q.id] = opt;
+        grid.querySelectorAll('.select-option').forEach(o => o.classList.remove('selected'));
+        el.classList.add('selected');
+      }
+      syncNext();
+    };
+    grid.querySelectorAll('.select-option').forEach(el => {
+      el.addEventListener('click', () => pick(el));
+      el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(el); } });
+    });
+  }
+  card.querySelectorAll('input[data-num]').forEach(inp => {
+    inp.addEventListener('input', () => {
+      const id = inp.dataset.num;
+      answers[id] = inp.value === '' ? undefined : Number(inp.value);
+      if (answers[id] === undefined) delete answers[id];
+      const chip = document.getElementById('unsureBtn');
+      if (chip) chip.classList.remove('selected');
+      inp.closest('.num-wrap').classList.remove('is-unsure');
+      syncNext();
+    });
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); if (isAnswered(q)) nextStep(); } });
+  });
+  const ta = card.querySelector('#textAnswer');
+  if (ta) ta.addEventListener('input', () => { answers[q.id] = ta.value; syncNext(); });
+  const chip = card.querySelector('#unsureBtn');
+  if (chip) chip.addEventListener('click', () => {
+    const ids = q.type === 'pair' ? q.fields.map(f => f.id) : [q.id];
+    const turnOn = !chip.classList.contains('selected');
+    ids.forEach(id => {
+      if (turnOn) { answers[id] = NOT_SURE; } else { delete answers[id]; }
+      const inp = document.getElementById('in_' + id);
+      if (inp) {
+        inp.value = '';
+        inp.placeholder = turnOn ? 'Not sure' : 'A rough number';
+        inp.closest('.num-wrap').classList.toggle('is-unsure', turnOn);
+      }
+    });
+    chip.classList.toggle('selected', turnOn);
+    syncNext();
+  });
+}
+
+function syncNext() {
   const btn = document.getElementById('nextBtn');
-  if (btn) { btn.disabled = false; btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
-}
-
-function selectScored(qIndex, value, el) {
-  answers[qIndex] = value;
-  el.closest('.option-list').querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  enableNext();
-}
-
-function selectBonus(bi, value, el) {
-  bonusAnswers[bi] = value;
-  el.closest('.select-grid').querySelectorAll('.select-option').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  enableNext();
+  if (!btn) return;
+  const ok = isAnswered(QUESTIONS[currentStep]);
+  btn.disabled = !ok;
+  btn.style.opacity = ok ? '1' : '0.4';
+  btn.style.pointerEvents = ok ? 'auto' : 'none';
 }
 
 function nextStep() {
+  if (!isAnswered(QUESTIONS[currentStep])) return;
   // DROP-OFF BEACON (2026-08-21). 261 pageviews had produced 3 completed
-  // quizzes and nothing recorded WHERE the other 258 stopped — the Pageviews
-  // tab carries path/referrer/utm/user-agent and no step column, confirmed on
-  // both the live sheet header and the writer at modal_automation_score.py.
-  // You cannot fix a funnel you cannot see, and shortening the quiz on a hunch
-  // is guessing dressed as a fix.
-  //
-  // Deliberately reuses the EXISTING /pixel endpoint and its `path` column
-  // instead of adding a tab or a schema: zero backend change, so the only risk
-  // surface is this file. Steps are 1-based and carry the total, so
-  // "/quiz/step/4-of-9" is readable in the sheet without a decoder.
-  // No PII — the beacon carries a position, never an answer.
+  // quizzes and nothing recorded WHERE the other 258 stopped. Reuses the
+  // EXISTING /pixel endpoint and its `path` column — zero backend change.
+  // Steps are 1-based and carry the total, so "/quiz/step/4-of-23" is
+  // readable in the sheet without a decoder. No PII — a position, never an
+  // answer.
   try { sendEventPixel('/quiz/step/' + (currentStep + 1) + '-of-' + totalSteps); } catch (e) {}
   if (currentStep < totalSteps - 1) {
     currentStep++;
@@ -1644,6 +1834,34 @@ function goBack() {
   }
 }
 
+// The intake payload the backend reads (discovery-v2). Numbers go as numbers,
+// "not sure" as the literal 'not_sure', multi-selects as arrays. The backend
+// fills every legacy key (industry, crew_count, avg_ticket_value, ...) from
+// these, so AGM fields, tags and the sheet keep working unchanged.
+function buildIntake() {
+  let utm = {};
+  try { utm = JSON.parse(sessionStorage.getItem('utm') || '{}'); } catch (e) {}
+  const intake = { quiz_version: QUIZ_VERSION };
+  QUESTIONS.forEach(q => {
+    const ids = q.type === 'pair' ? q.fields.map(f => f.id) : [q.id];
+    ids.forEach(id => {
+      const v = answers[id];
+      if (v === undefined || v === null || v === '') return;
+      intake[id] = (typeof v === 'string') ? v.trim() : v;
+    });
+  });
+  Object.assign(intake, {
+    utm_source: utm.utm_source || '',
+    utm_medium: utm.utm_medium || '',
+    utm_campaign: utm.utm_campaign || '',
+    utm_content: utm.utm_content || '',
+    utm_term: utm.utm_term || '',
+    referrer: utm.referrer || '',
+    cas_variant: (window.CAS_VARIANT || '')
+  });
+  return intake;
+}
+
 // ─────────────────────────────
 // EMAIL + RESULTS
 // ─────────────────────────────
@@ -1654,7 +1872,8 @@ function submitEmail(e) {
   userData = {
     name: document.getElementById('userName').value,
     email: document.getElementById('userEmail').value,
-    phone: document.getElementById('userPhone').value || ''
+    phone: document.getElementById('userPhone').value || '',
+    company: (document.getElementById('userCompany') || {}).value || ''
   };
 
   // Show loading animation sequence, then reveal results
@@ -1675,51 +1894,14 @@ function submitEmail(e) {
     last_name: nameParts.slice(1).join(' ') || '',
     email: userData.email,
     phone: userData.phone,
-    company: bonusAnswers[13] || ''
+    company: (userData.company || '').trim()
   };
-  // Send RAW POINT VALUES to the backend — it matches options by points
-  // (calculate_score, since 2026-04-05). Do NOT convert to option indices:
-  // that was the 04-12 "fix overwrite" regression that inverted every real
-  // score until 2026-07-02 (options are listed best-first here, so index 0
-  // = the BEST answer but scored as the WORST). Guarded by the deploy-gate
-  // scoring canary + the 30-min drift check.
-  const keyMap = ['speed_to_lead', 'quote_followup_method', 'quote_followup_touches',
-    'review_method', 'review_count', 'pipeline_visibility', 'close_rate_tracking',
-    'reactivation_outreach', 'customer_data'];
+  // discovery-v2: the owner's numbers ride in `intake`; `answers` is empty
+  // (it carried v1 option point values — the backend still scores those for
+  // the live canary and any old cached page).
   const answerPayload = {};
-  scoredQuestions.forEach((q, i) => {
-    if (keyMap[i]) {
-      answerPayload[keyMap[i]] = answers[i] || 0;
-    }
-  });
-  // UTM + referrer capture (persisted across multi-step quiz via sessionStorage)
-  let utm = {};
-  try { utm = JSON.parse(sessionStorage.getItem('utm') || '{}'); } catch (e) {}
-  const intake = {
-    monthly_leads: bonusAnswers[0] || '',
-    monthly_quotes: bonusAnswers[1] || '',
-    monthly_jobs: bonusAnswers[2] || '',
-    customer_db_size: bonusAnswers[3] || '',
-    fsm_platform: (bonusAnswers[4] || '').toLowerCase().replace(/\s+/g, '_'),
-    // Milestone 1 (2026-09-06): CRM-agnostic intake. accounting_platform is
-    // normalized exactly like fsm_platform; the other two ride raw.
-    accounting_platform: (bonusAnswers[5] || '').toLowerCase().replace(/\s+/g, '_'),
-    contract_method: bonusAnswers[6] || '',
-    finance_visibility: bonusAnswers[7] || '',
-    crew_count: bonusAnswers[8] || '',
-    avg_ticket_value: bonusAnswers[9] || '',
-    close_rate: bonusAnswers[10] || '',
-    industry: bonusAnswers[11] || '',
-    biggest_headache: bonusAnswers[12] || '',
-    company_url: bonusAnswers[13] || '',
-    utm_source: utm.utm_source || '',
-    utm_medium: utm.utm_medium || '',
-    utm_campaign: utm.utm_campaign || '',
-    utm_content: utm.utm_content || '',
-    utm_term: utm.utm_term || '',
-    referrer: utm.referrer || '',
-    cas_variant: (window.CAS_VARIANT || '')
-  };
+  const intake = buildIntake();
+  if (contact.company) intake.company = contact.company;
   const SCORE_API = 'https://agm-pro--agm-automation-score-score-app.modal.run/score';
   // Fail LOUD (2026-07-02): the old fire-and-forget .catch(() => {}) let the
   // success screen lie for three weeks while every submission 500'd. The
@@ -2009,7 +2191,7 @@ function renderResults() {
 }
 
 function startLaunchpadCheckout() {
-  const industryRaw = (bonusAnswers[11] || '').trim();
+  const industryRaw = ((answers.trades || [])[0] || '').trim();
   const industryMap = {
     'artificial turf': 'turf',
     'pest control': 'pest',
@@ -2018,7 +2200,7 @@ function startLaunchpadCheckout() {
   const contactName = userData.name || '';
 
   const checkoutPayload = {
-    business_name: bonusAnswers[13] || contactName + "'s Business",
+    business_name: userData.company || contactName + "'s Business",
     contact_name: contactName,
     contact_email: userData.email || '',
     city: '',
@@ -2086,35 +2268,38 @@ function openFullReport() {
   const projRecovery = Math.round(lossHigh * 0.6).toLocaleString();
   const projAnnual = (Math.round(lossHigh * 0.6) * 12).toLocaleString();
 
-  const lpParams = new URLSearchParams({name: userData.name||'', email: userData.email||'', phone: userData.phone||'', company: bonusAnswers[13]||''});
+  const lpParams = new URLSearchParams({name: userData.name||'', email: userData.email||'', phone: userData.phone||'', company: userData.company||''});
   if (window._agmContactId) lpParams.set('agm_contact_id', window._agmContactId);
   const launchpadUrl = 'https://agmpro-byte.github.io/agm-launchpad/?' + lpParams.toString();
 
+  // Troy 09-25: no unsourced statistics and no automation promises on a
+  // diagnostic. "problem" says what the answer suggests; "fix" (rendered as
+  // "Where we'd look") names what a strategy call would check, never a product.
   const gapInsights = {
     'Speed to Lead': {
       desc: 'How quickly new leads get a response from your team',
-      problem: "When a lead comes in and doesn't hear back within 5 minutes, there's a 78% chance they've already called your competitor. Every hour of delay cuts your close rate in half.",
-      fix: "Automated instant response \u2014 text, email, or call-back \u2014 triggered the moment a lead hits your system. No human needed. The fastest contractor wins."
+      problem: "Homeowners usually contact more than one contractor. When a new lead waits hours for a reply, the first business to answer often gets the appointment.",
+      fix: "How a new lead reaches your team, who sees it first, and what happens to it when everyone is on a job site."
     },
     'Quote Follow-Up': {
-      desc: 'What happens after a quote goes out \u2014 automated or manual',
-      problem: "Industry data shows 80% of jobs are won between the 2nd and 5th follow-up. If you're sending one quote and waiting, you're handing revenue to the contractor who follows up three times.",
-      fix: "A timed follow-up sequence that automatically nudges the prospect at day 1, 3, 5, and 7 after the quote goes out. This single automation typically recovers 15-30% of quotes."
+      desc: 'What happens after a quote goes out',
+      problem: "Most homeowners don't decide the day a quote arrives. A quote that gets one follow-up, or none, is easy to forget while they compare.",
+      fix: "What happens to a quote after it's sent: who follows up, how often, and how you know which quotes are still open."
     },
     'Review Generation': {
-      desc: 'Whether reviews are requested automatically after every job',
-      problem: "Contractors with 100+ Google reviews get 3x more inbound calls than those with fewer than 20. Every week without automated review requests is organic traffic you'll never get back.",
-      fix: "An automatic review request sent via text within 24 hours of job completion. Text requests convert at 3-5x the rate of email. Most contractors double their review count within 90 days."
+      desc: 'How reviews get asked for after a job',
+      problem: "New customers read your reviews before they call. How many you have, and how recent they are, shapes who picks up the phone. Reviews given in exchange for a discount or gift break Google's review policy.",
+      fix: "What happens after a job is finished: who asks for the review, when, and how you'd know if a finished job was never asked."
     },
     'Pipeline Visibility': {
       desc: 'Whether you can see every open quote, its age, and status in one place',
-      problem: "If you can't see every open quote, its age, and its status in one place, you're flying blind. The average contractor has $50K-$150K in unworked quotes sitting in their system.",
-      fix: "A single dashboard that shows every quote, every stage, and flags the ones going cold \u2014 so you know exactly where to focus today. This visibility alone recovers 10-20% of stale quotes."
+      problem: "When open quotes live in inboxes and spreadsheets, it's hard to see which ones are going quiet until it's too late to ask.",
+      fix: "Where your leads, quotes and booked jobs live today, and what you have to go digging for to know how the business is doing."
     },
     'Customer Reactivation': {
-      desc: 'After-hours call handling and staying in touch with past customers',
-      problem: "It costs 5-7x more to win a new customer than to reactivate a past one. If you did work for someone 12 months ago and haven't reached out, that customer is getting mailers from your competitors.",
-      fix: "Automated seasonal campaigns triggered by install date. Plus after-hours text-back so you never miss an inbound call. One setup, runs forever."
+      desc: 'Staying in touch with past customers',
+      problem: "Past customers already chose you once. If the only contact is when they call you, repeat work and referrals are left to chance.",
+      fix: "When past customers last heard from you, and whether you could pull a list of everyone you did work for two years ago."
     }
   };
 
@@ -2137,7 +2322,7 @@ function openFullReport() {
   const sorted = categories.map((cat, i) => ({ name: cat.name, score: catScores[i], max: cat.max, pct: Math.round((catScores[i]/cat.max)*100) }))
     .sort((a, b) => a.pct - b.pct);
   const weakest = sorted[0].name;
-  const fsm = (bonusAnswers[4] || 'your current software');
+  const fsm = ((answers.pipeline_lives_in || []).join(', ') || 'your current software');
 
   let gapHTML = '';
   sorted.forEach((s, i) => {
@@ -2147,7 +2332,7 @@ function openFullReport() {
     <div class="gap-card" style="border-left-color:${severity[1]}">
       <div class="gap-card-header"><h3>${s.name} (${s.score}/${s.max})</h3><span class="gap-score-badge" style="background:${severity[0]};color:${severity[1]};">${severity[2]}</span></div>
       <div class="gap-section"><div class="gap-section-label problem">What This Means</div><p>${gap.problem || ''}</p></div>
-      <div class="gap-section"><div class="gap-section-label fix">What Top Contractors Do Differently</div><p>${gap.fix || ''}</p></div>
+      <div class="gap-section"><div class="gap-section-label fix">Where we'd look</div><p>${gap.fix || ''}</p></div>
     </div>`;
   });
   // Split gap cards: first 3 on page 4, remaining on page 5
@@ -2157,7 +2342,7 @@ function openFullReport() {
     return `<div class="gap-card" style="border-left-color:${severity[1]}">
       <div class="gap-card-header"><h3>${s.name} (${s.score}/${s.max})</h3><span class="gap-score-badge" style="background:${severity[0]};color:${severity[1]};">${severity[2]}</span></div>
       <div class="gap-section"><div class="gap-section-label problem">What This Means</div><p>${gap.problem || ''}</p></div>
-      <div class="gap-section"><div class="gap-section-label fix">What Top Contractors Do Differently</div><p>${gap.fix || ''}</p></div>
+      <div class="gap-section"><div class="gap-section-label fix">Where we'd look</div><p>${gap.fix || ''}</p></div>
     </div>`;
   });
 
@@ -2239,11 +2424,11 @@ h1{font-size:2.4rem;font-weight:700;letter-spacing:-0.02em;line-height:1.15;colo
     </div>
     <div class="card" style="align-self:start;">
       <h4 style="margin-bottom:0.75rem;font-size:0.7rem;">Business Snapshot</h4>
-      <div class="stat-item"><div class="stat-label">Avg. Ticket Value</div><div class="stat-value">${bonusAnswers[9] || 'Not provided'}</div></div>
-      <div class="stat-item"><div class="stat-label">Crew Size</div><div class="stat-value">${bonusAnswers[8] || 'Not provided'}</div></div>
-      <div class="stat-item"><div class="stat-label">Current Software</div><div class="stat-value">${bonusAnswers[4] || 'Not provided'}</div></div>
-      <div class="stat-item"><div class="stat-label">Accounting</div><div class="stat-value">${bonusAnswers[5] || 'Not provided'}</div></div>
-      <div class="stat-item"><div class="stat-label">Biggest Headache</div><div class="stat-value">${bonusAnswers[12] || 'Not provided'}</div></div>
+      <div class="stat-item"><div class="stat-label">Avg. Job</div><div class="stat-value">${answers.avg_job_value != null && answers.avg_job_value !== 'not_sure' ? '$' + Number(answers.avg_job_value).toLocaleString() : 'Not provided'}</div></div>
+      <div class="stat-item"><div class="stat-label">Crews</div><div class="stat-value">${answers.crews != null && answers.crews !== 'not_sure' ? answers.crews : 'Not provided'}</div></div>
+      <div class="stat-item"><div class="stat-label">Leads & quotes live in</div><div class="stat-value">${escHtml((answers.pipeline_lives_in || []).join(', ') || 'Not provided')}</div></div>
+      <div class="stat-item"><div class="stat-label">Leads / mo</div><div class="stat-value">${answers.leads_per_month != null && answers.leads_per_month !== 'not_sure' ? answers.leads_per_month : 'Not provided'}</div></div>
+      <div class="stat-item"><div class="stat-label">Wants to know every morning</div><div class="stat-value">${escHtml(answers.morning_wish || 'Not provided')}</div></div>
     </div>
   </div>
   ${pageFooter(2)}
@@ -2286,7 +2471,7 @@ h1{font-size:2.4rem;font-weight:700;letter-spacing:-0.02em;line-height:1.15;colo
   ${gapCards.slice(3).join('')}
   <div class="card mt-3" style="border-left:3px solid var(--green);">
     <p class="text-small" style="margin-bottom:0;color:var(--text-muted);">
-      <strong style="color:var(--green);">Note:</strong> Statistics referenced in this assessment are derived from published industry research including the MIT/InsideSales.com Lead Response Study (2007), Harvard Business Review (2011), BrightLocal Consumer Review Surveys (2023\u20132024), Bain &amp; Company customer acquisition research, and Jobber industry benchmarks.
+      <strong style="color:var(--green);">Note:</strong> Statistics referenced in this assessment are derived from published industry research including the MIT/InsideSales.com Lead Response Study (2007), Harvard Business Review (2011), BrightLocal Consumer Review Surveys (2023\u20132024), and Bain &amp; Company customer acquisition research.
     </p>
   </div>
   ${pageFooter(5)}
@@ -2304,20 +2489,10 @@ h1{font-size:2.4rem;font-weight:700;letter-spacing:-0.02em;line-height:1.15;colo
     <li><div class="step-content"><h3>Book a strategy call to build your roadmap</h3><p>In 30 minutes, we'll map your score against your ${fsm} setup and build a prioritized plan starting with ${weakest.toLowerCase()}.</p></div></li>
   </ol>
   <div class="divider mt-2"></div>
-  <h3 class="mt-2" style="margin-bottom:0.75rem;">Your 90-Day ROI Projection</h3>
-  <div class="card-flush">
-    <table class="roi-table">
-      <tr><td>Current estimated monthly loss</td><td>$${lossHigh.toLocaleString()}</td></tr>
-      <tr><td>Projected recovery at 60%</td><td>$${projRecovery}</td></tr>
-      <tr class="highlight"><td>Projected annual recovery</td><td>$${projAnnual}</td></tr>
-    </table>
-  </div>
   <div class="cta-box">
-    <h3 style="color:#fff;">Ready to Close These Gaps?</h3>
-    <p style="color:rgba(255,255,255,0.9);">AGM Pro Tools automates the exact gaps this report identified \u2014 lead response, quote follow-up, review requests, pipeline visibility, and reactivation. Live in under 10 minutes.</p>
-    <a href="${launchpadUrl}" class="cta-link" style="background:#fff;color:#059669;border-radius:8px;padding:14px 32px;text-decoration:none;display:inline-block;font-weight:600;">Get Started with AGM Pro Tools \u2014 $297/mo</a>
-    <p class="text-xs mt-2" style="margin-bottom:8px;color:rgba(255,255,255,0.7);">Cancel anytime \u00b7 No setup fee \u00b7 Works with the software you already run</p>
-    <a href="https://link.agmpro.com/widget/bookings/pro-tools-strategy-call" class="cta-link" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.4);border-radius:8px;padding:12px 28px;text-decoration:none;display:inline-block;font-weight:500;font-size:14px;">Or Book a Free Strategy Call First</a>
+    <h3 style="color:#fff;">Check this against your real numbers</h3>
+    <p style="color:rgba(255,255,255,0.9);">Everything in this report is an estimate from your answers. On a 30-minute strategy call we go through them with you, confirm or correct each one, and show you where we'd look first. We don't talk pricing until we've talked about your business.</p>
+    <a href="https://link.agmpro.com/widget/bookings/pro-tools-strategy-call" class="cta-link" style="background:#fff;color:#059669;border-radius:8px;padding:14px 32px;text-decoration:none;display:inline-block;font-weight:600;">Book a strategy call</a>
     <p class="text-xs mt-2" style="margin-bottom:0;color:rgba(255,255,255,0.5);">Your full report — with your Audio Executive Briefing — has also been sent to <strong style="color:rgba(255,255,255,0.7);">${userData.email || 'your email'}</strong>.</p>
   </div>
   ${pageFooter(6)}

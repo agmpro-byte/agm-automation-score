@@ -1022,7 +1022,7 @@ body {
 <!-- Progress -->
 <div class="progress-wrap" id="progressWrap">
   <div class="progress-info">
-    <span class="progress-step" id="progressStep">Question 1 of 22</span>
+    <span class="progress-step" id="progressStep">Question 1 of 24</span>
     <span class="progress-pct" id="progressPct">0%</span>
   </div>
   <div class="progress-bar-track">
@@ -1046,7 +1046,7 @@ body {
         <span class="hero-stat-label">To complete</span>
       </div>
       <div class="hero-stat">
-        <span class="hero-stat-num" id="heroQuestionCount">22</span>
+        <span class="hero-stat-num" id="heroQuestionCount">24</span>
         <span class="hero-stat-label">Questions</span>
       </div>
       <div class="hero-stat">
@@ -1202,7 +1202,9 @@ body {
    {"id":"trades","type":"multi","q":"What kind of work do you do?","help":"Pick all that apply.","options":["Artificial Turf","Landscaping","Hardscape / Pavers","Pest Control","HVAC","Plumbing","Cleaning","Pool Service","Handyman","Electrical","Roofing","Fencing","Other"],"feeds":"Header; job types on every panel"},
    {"id":"crews","type":"number","q":"How many crews or trucks do you run?","help":"A rough number is fine.","min":0,"feeds":"Capacity read"},
    {"id":"booked_weeks","type":"number","q":"How many weeks out are you booked right now?","help":"Today, roughly.","min":0,"unit":"weeks","feeds":"Primary-constraint read"},
-   {"id":"systems_used","type":"multi","q":"What do you run the business on?","help":"Pick all that apply. No judgement. Okay, a little judgement.","options":["A CRM or sales software","Scheduling / field-service software","QuickBooks or other accounting software","Spreadsheets","Paper or a whiteboard","Mostly my memory"],"feeds":"Who acts on what; connection plan"}
+   {"id":"systems_used","type":"multi","q":"What do you run the business on?","help":"Pick all that apply. No judgement. Okay, a little judgement.","options":["A CRM or sales software","Scheduling / field-service software","QuickBooks or other accounting software","Spreadsheets","Paper or a whiteboard","Mostly my memory"],"feeds":"Who acts on what; connection plan"},
+   {"id":"crm_software","type":"multi","q":"Which CRM or field-service software do you use?","help":"Pick all that apply. We work with most of these, so this tells us where your information already lives.","options":["Housecall Pro","ServiceTitan","FieldRoutes","FieldPulse","Workiz","Service Fusion","ServiceM8","GoHighLevel","HubSpot","Salesforce","Other (type it)","None"],"other":"Other (type it)","otherPlaceholder":"What’s it called?","exclusive":["None"],"showIf":{"systems_used":["A CRM or sales software","Scheduling / field-service software"]},"feeds":"Names their systems in the report, briefing, email and follow-ups; FSM Platform field + fsm- tag"},
+   {"id":"accounting_software","type":"select","q":"And which accounting software keeps your books?","help":"The money side of the story lives here. So does your bookkeeper, probably.","options":["QuickBooks Online","QuickBooks Desktop","Xero","FreshBooks","Wave","Sage","Other (type it)","None"],"other":"Other (type it)","otherPlaceholder":"What’s it called?","showIf":{"systems_used":["QuickBooks or other accounting software"]},"feeds":"Names their books in the report, briefing, email and follow-ups; Accounting Platform field + acct- tag"}
   ]},
  {"section":"Lead to a person","intro":"A new lead just came in. The clock is running. Let’s see who answers.",
   "questions":[
@@ -1341,6 +1343,26 @@ let currentStep = 0;
 let answers = {};   // id -> string | number | 'not_sure' | string[]
 let userData = {};
 
+// Follow-on questions (Troy 11-07: which CRM, which accounting software) carry
+// "showIf": {"systems_used": [...]} and appear only when that answer includes
+// one of the listed options. Until the source question is answered they
+// count as shown, so the "of N" only ever shrinks. currentStep indexes THIS
+// list, never QUESTIONS.
+function isShown(q) {
+  if (!q.showIf) return true;
+  return Object.keys(q.showIf).every(function (src) {
+    const v = answers[src];
+    if (v === undefined || (Array.isArray(v) && !v.length)) return true;
+    const got = Array.isArray(v) ? v : [v];
+    return q.showIf[src].some(function (o) { return got.indexOf(o) !== -1; });
+  });
+}
+function steps() { return QUESTIONS.filter(isShown); }
+function otherPicked(q) {
+  const v = answers[q.id];
+  return !!q.other && (Array.isArray(v) ? v.indexOf(q.other) !== -1 : v === q.other);
+}
+
 (function paintCounts() {
   try {
     var el = document.getElementById('heroQuestionCount');
@@ -1391,9 +1413,10 @@ function startQuiz() {
 }
 
 function updateProgress() {
-  const pct = Math.round(((currentStep + 1) / totalSteps) * 100);
+  const n = steps().length;
+  const pct = Math.round(((currentStep + 1) / n) * 100);
   document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressStep').textContent = `Question ${currentStep + 1} of ${totalSteps}`;
+  document.getElementById('progressStep').textContent = `Question ${currentStep + 1} of ${n}`;
   document.getElementById('progressPct').textContent = pct + '%';
 }
 
@@ -1429,8 +1452,10 @@ function numberInput(id, label, type, spec) {
 function renderStep() {
   updateProgress();
   const card = document.getElementById('quizCard');
-  const q = QUESTIONS[currentStep];
-  const isFirstOfSection = currentStep === 0 || q.section !== QUESTIONS[currentStep - 1].section;
+  const list = steps();
+  const total = list.length;
+  const q = list[currentStep];
+  const isFirstOfSection = currentStep === 0 || q.section !== list[currentStep - 1].section;
 
   let inputHTML = '';
   if (q.type === 'select' || q.type === 'multi') {
@@ -1440,6 +1465,10 @@ function renderStep() {
         const on = q.type === 'multi' ? (Array.isArray(cur) && cur.includes(o)) : cur === o;
         return `<div class="select-option ${on ? 'selected' : ''}" data-i="${i}" role="button" tabindex="0">${escHtml(o)}</div>`;
       }).join('') + '</div>';
+    if (q.other) {
+      inputHTML += `<input type="text" id="otherAnswer" class="form-input" maxlength="80" style="margin-top:12px;${otherPicked(q) ? '' : 'display:none;'}"
+        placeholder="${escHtml(q.otherPlaceholder || 'Type it here')}" value="${escHtml(answers[q.id + '_other'] || '')}">`;
+    }
   } else if (q.type === 'number' || q.type === 'money') {
     inputHTML = `<div class="num-row">${numberInput(q.id, '', q.type, q)}</div>`;
   } else if (q.type === 'pair') {
@@ -1456,7 +1485,7 @@ function renderStep() {
     : answers[q.id] === NOT_SURE);
 
   card.innerHTML = `
-    <div class="quiz-number">Question ${currentStep + 1} of ${totalSteps}</div>
+    <div class="quiz-number">Question ${currentStep + 1} of ${total}</div>
     <div class="quiz-category">${escHtml(q.section)}</div>
     ${isFirstOfSection && q.sectionIntro ? `<div class="section-transition">${escHtml(q.sectionIntro)}</div>` : ''}
     <div class="intake-q">${escHtml(q.q)}</div>
@@ -1470,7 +1499,7 @@ function renderStep() {
           Back
         </button>` : '<div></div>'}
       <button class="btn-primary" id="nextBtn" onclick="nextStep()">
-        ${currentStep === totalSteps - 1 ? 'Continue' : (q.optional && !isAnswered(Object.assign({}, q, { optional: false })) ? 'Skip' : 'Next')}
+        ${currentStep === total - 1 ? 'Continue' : (q.optional && !isAnswered(Object.assign({}, q, { optional: false })) ? 'Skip' : 'Next')}
         <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
       </button>
     </div>
@@ -1499,12 +1528,21 @@ function wireStep(q) {
       if (q.type === 'multi') {
         let cur = Array.isArray(answers[q.id]) ? answers[q.id].slice() : [];
         cur = cur.includes(opt) ? cur.filter(x => x !== opt) : cur.concat([opt]);
+        // "None" can't sit beside a named system: picking one clears the other.
+        const excl = q.exclusive || [];
+        if (cur.includes(opt)) cur = excl.includes(opt) ? [opt] : cur.filter(x => !excl.includes(x));
         answers[q.id] = cur;
-        el.classList.toggle('selected');
+        grid.querySelectorAll('.select-option').forEach(o =>
+          o.classList.toggle('selected', cur.includes(q.options[+o.dataset.i])));
       } else {
         answers[q.id] = opt;
         grid.querySelectorAll('.select-option').forEach(o => o.classList.remove('selected'));
         el.classList.add('selected');
+      }
+      const other = card.querySelector('#otherAnswer');
+      if (other) {
+        other.style.display = otherPicked(q) ? '' : 'none';
+        if (otherPicked(q)) other.focus();
       }
       syncNext();
     };
@@ -1527,6 +1565,11 @@ function wireStep(q) {
   });
   const ta = card.querySelector('#textAnswer');
   if (ta) ta.addEventListener('input', () => { answers[q.id] = ta.value; syncNext(); });
+  const other = card.querySelector('#otherAnswer');
+  if (other) {
+    other.addEventListener('input', () => { answers[q.id + '_other'] = other.value; });
+    other.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); if (isAnswered(q)) nextStep(); } });
+  }
   const chip = card.querySelector('#unsureBtn');
   if (chip) chip.addEventListener('click', () => {
     const ids = q.type === 'pair' ? q.fields.map(f => f.id) : [q.id];
@@ -1548,22 +1591,22 @@ function wireStep(q) {
 function syncNext() {
   const btn = document.getElementById('nextBtn');
   if (!btn) return;
-  const ok = isAnswered(QUESTIONS[currentStep]);
+  const ok = isAnswered(steps()[currentStep]);
   btn.disabled = !ok;
   btn.style.opacity = ok ? '1' : '0.4';
   btn.style.pointerEvents = ok ? 'auto' : 'none';
 }
 
 function nextStep() {
-  if (!isAnswered(QUESTIONS[currentStep])) return;
+  if (!isAnswered(steps()[currentStep])) return;
   // DROP-OFF BEACON (2026-08-21). 261 pageviews had produced 3 completed
   // quizzes and nothing recorded WHERE the other 258 stopped. Reuses the
   // EXISTING /pixel endpoint and its `path` column — zero backend change.
   // Steps are 1-based and carry the total, so "/quiz/step/4-of-23" is
   // readable in the sheet without a decoder. No PII — a position, never an
   // answer.
-  try { sendEventPixel('/quiz/step/' + (currentStep + 1) + '-of-' + totalSteps); } catch (e) {}
-  if (currentStep < totalSteps - 1) {
+  try { sendEventPixel('/quiz/step/' + (currentStep + 1) + '-of-' + steps().length); } catch (e) {}
+  if (currentStep < steps().length - 1) {
     currentStep++;
     renderStep();
   } else {
@@ -1580,7 +1623,7 @@ function goBack() {
   // From email section
   const emailActive = document.getElementById('emailSection').classList.contains('active');
   if (emailActive) {
-    currentStep = totalSteps - 1;
+    currentStep = steps().length - 1;
     showSection('quizSection');
     document.getElementById('progressWrap').classList.add('visible');
     renderStep();
@@ -1600,8 +1643,11 @@ function buildIntake() {
   let utm = {};
   try { utm = JSON.parse(sessionStorage.getItem('utm') || '{}'); } catch (e) {}
   const intake = { quiz_version: QUIZ_VERSION };
-  QUESTIONS.forEach(q => {
+  // Only questions the owner was shown: a CRM answer left behind after he
+  // unticked "A CRM or sales software" must not ride along.
+  steps().forEach(q => {
     const ids = q.type === 'pair' ? q.fields.map(f => f.id) : [q.id];
+    if (otherPicked(q)) ids.push(q.id + '_other');
     ids.forEach(id => {
       const v = answers[id];
       if (v === undefined || v === null || v === '') return;

@@ -1022,7 +1022,7 @@ body {
 <!-- Progress -->
 <div class="progress-wrap" id="progressWrap">
   <div class="progress-info">
-    <span class="progress-step" id="progressStep">Question 1 of 24</span>
+    <span class="progress-step" id="progressStep">Question 1 of 28</span>
     <span class="progress-pct" id="progressPct">0%</span>
   </div>
   <div class="progress-bar-track">
@@ -1046,7 +1046,7 @@ body {
         <span class="hero-stat-label">To complete</span>
       </div>
       <div class="hero-stat">
-        <span class="hero-stat-num" id="heroQuestionCount">24</span>
+        <span class="hero-stat-num" id="heroQuestionCount">28</span>
         <span class="hero-stat-label">Questions</span>
       </div>
       <div class="hero-stat">
@@ -1225,12 +1225,16 @@ body {
   "questions":[
    {"id":"deposit_at_signing","type":"select","q":"Do you take a deposit when the contract is signed?","options":["Always","Usually","Sometimes","No"],"feeds":"Getting paid (scored)"},
    {"id":"finish_to_invoice","type":"select","q":"When a job is finished, how long until it’s invoiced?","help":"This is where our $80K was hiding.","options":["Same day","Within a week","1–2 weeks","Longer than that","Not sure"],"feeds":"Getting paid (scored)"},
-   {"id":"payment_options","type":"multi","q":"How can customers pay you?","help":"Pick all that apply.","options":["Card","Bank transfer (ACH)","Financing","Check","Cash"],"feeds":"Getting paid (scored)"}
+   {"id":"payment_options","type":"multi","q":"How can customers pay you?","help":"Pick all that apply.","options":["Card","Bank transfer (ACH)","Financing","Check","Cash"],"feeds":"Getting paid (scored)"},
+   {"id":"ar_visibility","type":"select","q":"Right now, without asking anyone, do you know who owes you money and how old the oldest unpaid invoice is?","help":"That’s your accounts receivable. Most owners find out the hard way.","options":["Yes, at a glance","I’d have to look it up","Only my bookkeeper knows","No"],"feeds":"Getting paid (scored): money owed to you"},
+   {"id":"ap_tracking","type":"select","q":"How do you keep track of the bills you owe: materials, subs, suppliers?","help":"The other half of cash flow.","options":["In the books, paid on a schedule","We pay them as they come in","Someone else handles it and I don’t see it","Honestly, they surprise us"],"feeds":"Getting paid (scored): bills you owe"}
   ]},
  {"section":"Numbers you can trust","intro":"Ours was off by 13%. How sure are you about yours?",
   "questions":[
    {"id":"close_rate_defined","type":"select","q":"Could you write down exactly how your close rate is calculated?","options":["Yes, and every report uses it","Yes, but our reports don’t agree","Roughly","No"],"feeds":"Numbers you can trust (scored)"},
-   {"id":"lead_source_of_10","type":"number","q":"Out of every 10 leads, how many could you name the source of?","help":"We checked ours: about half had no source at all.","min":0,"max":10,"step":1,"feeds":"Numbers you can trust (scored)"}
+   {"id":"lead_source_of_10","type":"number","q":"Out of every 10 leads, how many could you name the source of?","help":"We checked ours: about half had no source at all.","min":0,"max":10,"step":1,"feeds":"Numbers you can trust (scored)"},
+   {"id":"cash_30_days","type":"select","q":"Could you say roughly how much cash the business will have 30 days from now?","help":"Gut answer. No opening the bank app.","options":["Yes, within a few thousand","Roughly","Only after an hour with the books","No idea"],"feeds":"Numbers you can trust (scored): cash flow"},
+   {"id":"pnl_frequency","type":"select","q":"How often do you look at a profit and loss report?","help":"The P&L: the report that says whether all that work actually made money.","options":["Every week","Every month","At tax time","Never"],"feeds":"Numbers you can trust (scored): profit and loss"}
   ]},
  {"section":"Who chases what","intro":"Last stretch. This is the part about you.",
   "questions":[

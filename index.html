@@ -1245,7 +1245,7 @@ body {
 
 .bonus-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
 
@@ -1284,6 +1284,27 @@ body {
 }
 
 .bonus p { font-size: 15px; line-height: 1.55; color: var(--text-secondary); }
+
+.bonus code {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  color: var(--text);
+  background: var(--surface-3);
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  padding: 0 4px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.bonus p + p { margin-top: 10px; }
+
+.bonus .bonus-punch {
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--text);
+}
 
 .bonus .bonus-note {
   margin-top: 12px;
@@ -1552,14 +1573,18 @@ body {
         <div class="bonus b-site">
           <p class="bonus-tag"><span>05</span>Free bonus</p>
           <h3>The first impression you never see</h3>
-          <p>Your website meets every customer before you do. We check whether Google can find it, whether it earns a stranger&rsquo;s trust, and whether it&rsquo;s safe to fill in. Every problem comes with the fix, in plain words for whoever runs your site.</p>
+          <p>Your website meets every customer before you do. We check its <code>noindex directives</code>, <code>canonical URLs</code>, <code>robots.txt</code>, <code>XML sitemap</code>, <code>crawlable links</code>, <code>TCPA and A2P 10DLC consent language</code>, <code>SSL certificate</code>, <code>HSTS header</code> and <code>mixed content</code>.</p>
+          <p class="bonus-punch">Don&rsquo;t know what half of that means? That&rsquo;s reason number five.</p>
+          <p>Every problem comes with the fix, in plain English for whoever runs your site.</p>
           <p class="bonus-note">Add your website on the last step. It arrives as a PDF you can forward.</p>
         </div>
         <div class="bonus b-mystery">
           <p class="bonus-tag"><span>06</span>Mystery bonus</p>
           <h3>Score 60 or higher and the report changes</h3>
-          <p>We won&rsquo;t spoil it. Owners who&rsquo;ve already built real systems get a different report from everyone else.</p>
-          <p class="bonus-note">You&rsquo;ll know which one you got.</p>
+          <p>Most reports are a list of what to fix. Clear 60 and yours stops being about fixes.</p>
+          <p>It shows what your systems could tell you if they finally read each other, and what one ordinary morning in your business looks like when they do.</p>
+          <p class="bonus-punch">Hint: it starts with your cash, before your coffee.</p>
+          <p>We won&rsquo;t spoil the rest. You&rsquo;ll know which report you got. You won&rsquo;t see the other one.</p>
         </div>
       </div>
       <div class="get-cta">

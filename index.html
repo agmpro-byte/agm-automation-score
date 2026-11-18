@@ -346,7 +346,7 @@ body {
 }
 
 .pillar-fig {
-  font-size: 44px;
+  font-size: clamp(48px, 6vw, 64px);
   font-weight: 800;
   letter-spacing: -0.035em;
   line-height: 1;
@@ -371,6 +371,7 @@ body {
 }
 
 .pillar-body .amt { color: var(--c); font-weight: 700; }
+.pillar-body strong { display: block; margin-top: 8px; color: var(--text); font-weight: 600; }
 .pillar-body .cut-tools { margin-top: 10px; }
 
 .pillar-now {
@@ -383,6 +384,48 @@ body {
 }
 
 .pillar-now b { color: var(--c); font-weight: 700; }
+
+/* Button above the fold */
+.hero-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 20px;
+  margin-top: 32px;
+}
+
+.hero-cta-note { font-size: 14px; color: var(--text-muted); }
+
+/* The reader's four questions: one per pillar, same colours */
+.your-qs {
+  list-style: none;
+  margin-top: 28px;
+  border-top: 1px solid var(--border);
+}
+
+.your-qs li {
+  position: relative;
+  padding: 18px 0 18px 26px;
+  border-bottom: 1px solid var(--border);
+  font-size: clamp(18px, 2.4vw, 22px);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.35;
+  color: var(--text);
+}
+
+.your-qs li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 18%, transparent);
+}
 
 /* The turn: from our story to theirs */
 .turn { margin: 88px 0 24px; }
@@ -1174,7 +1217,8 @@ body {
   .pillar-grid { grid-template-columns: 1fr; }
   .pillars { margin-top: 48px; }
   .turn { margin-top: 64px; }
-  .pillar-fig { font-size: 38px; }
+  .pillar-fig { font-size: 48px; }
+  .hero-cta-row .btn-primary { width: 100%; }
 }
 
 @media (max-width: 600px) {
@@ -1226,6 +1270,10 @@ body {
     </div>
     <h1 class="hero-title animate-in stagger-2" id="heroHeadline">We&rsquo;re cutting <span class="hl">$100K</span> in software subscriptions.</h1>
     <p class="hero-thesis animate-in stagger-2">Your software tells you what happened yesterday. <strong>We tell you what to do tomorrow.</strong></p>
+    <div class="hero-cta-row animate-in stagger-3">
+      <button class="btn-primary" onclick="startQuiz()">Fine. Show me. <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg></button>
+      <span class="hero-cta-note">Free. Five minutes. Nobody calls you.</span>
+    </div>
 
     <div class="pillars animate-in stagger-3">
       <div class="pillars-head">
@@ -1252,15 +1300,15 @@ body {
         </article>
         <article class="pillar p-truth">
           <p class="pillar-tag"><span>03</span>Fixed the numbers</p>
-          <p class="pillar-fig">2 <span>close rates</span></p>
-          <div class="pillar-body"><p>Two of our own reports gave us two different close rates, and both looked official.</p></div>
-          <p class="pillar-now"><b>Now:</b> one definition for every number, used on every screen.</p>
+          <p class="pillar-fig">2 <span>close rates. Both official.</span></p>
+          <div class="pillar-body"><p>Two of our own reports gave us two different close rates. <strong>So which one do you coach your sales team on? Which one do you take to the bank?</strong></p></div>
+          <p class="pillar-now"><b>Now:</b> one definition for every number, used on every screen. One answer, every time.</p>
         </article>
         <article class="pillar p-time">
           <p class="pillar-tag"><span>04</span>Caught who&rsquo;s waiting</p>
-          <p class="pillar-fig">33 <span>customers</span></p>
-          <div class="pillar-body"><p>were waiting on a reply from us the first morning it ran. 25 of them for three days or more.</p></div>
-          <p class="pillar-now"><b>Now:</b> every morning it tells us who's waiting, oldest first.</p>
+          <p class="pillar-fig">33 <span>customers waiting on us</span></p>
+          <div class="pillar-body"><p>That was the first morning it ran. 25 of them had waited three days or more. <strong>Three days is plenty of time to hire someone else.</strong></p></div>
+          <p class="pillar-now"><b>Now:</b> every morning it tells us who's waiting, oldest first. No one goes unanswered without us knowing.</p>
         </article>
       </div>
     </div>
@@ -1268,6 +1316,12 @@ body {
     <div class="turn animate-in stagger-3">
       <p class="turn-kicker">We found ours. Let&rsquo;s find yours.</p>
       <h2 class="turn-title">What can we save you?</h2>
+      <ul class="your-qs">
+        <li class="p-cost">Which subscriptions could you cancel tomorrow?</li>
+        <li class="p-cash">How much finished work hasn&rsquo;t been paid for?</li>
+        <li class="p-truth">Which of your numbers would you bet the business on?</li>
+        <li class="p-time">Who&rsquo;s waiting on you right now?</li>
+      </ul>
     </div>
     <div class="hero-sub animate-in stagger-3" id="heroSub">
       <p class="hero-lead">When was the last time you sat down with another owner, someone who knows how a business like yours really runs, and got straight feedback on yours?</p>

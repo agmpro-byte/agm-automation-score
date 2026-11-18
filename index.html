@@ -27,6 +27,10 @@
   --accent-ink: #05170c;
   --accent-glow: rgba(92, 209, 139, 0.12);
   --accent-line: rgba(92, 209, 139, 0.35);
+  --c-cost: #5cd18b;
+  --c-cash: #f2b950;
+  --c-truth: #72aaff;
+  --c-time: #c4a1ff;
   --green: #5cd18b;
   --blue: #3b82f6;
   --yellow: #eab308;
@@ -46,6 +50,8 @@
 html { scroll-behavior: smooth; }
 
 body {
+  background-image: radial-gradient(900px 480px at 15% -120px, rgba(92, 209, 139, 0.08), transparent 70%);
+  background-repeat: no-repeat;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   background: var(--bg);
   color: var(--text);
@@ -77,6 +83,11 @@ body {
   border-bottom: 1px solid var(--border);
   padding: 16px 0;
 }
+
+.header .container,
+#heroSection .container { max-width: 900px; }
+
+.hero-sub, .hero-stats { max-width: 660px; }
 
 .header .container {
   display: flex;
@@ -238,136 +249,132 @@ body {
 }
 
 .hero-title {
-  font-size: clamp(40px, 7vw, 66px);
+  font-size: clamp(40px, 7vw, 68px);
   font-weight: 800;
-  line-height: 1.04;
+  line-height: 1.03;
   letter-spacing: -0.035em;
   color: var(--text);
-  margin-bottom: 36px;
+  margin-bottom: 20px;
+  max-width: 820px;
   text-wrap: balance;
 }
 
 .hero-title .hl { color: var(--accent); }
 
-/* What we cut: a two-line ledger */
-.cut-ledger {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
+/* Value line under the headline */
+.hero-thesis {
+  font-size: clamp(18px, 2.4vw, 22px);
+  line-height: 1.45;
+  color: var(--text-secondary);
+  max-width: 640px;
 }
 
-.cut-row { padding: 18px 22px; }
-.cut-row + .cut-row { border-top: 1px solid var(--border); }
+.hero-thesis strong { display: block; color: var(--text); font-weight: 600; }
 
-.cut-head {
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+/* ─── Four pillars: one colour each, same lightness so they sit together ─── */
+.pillars { margin-top: 72px; }
+
+.pillars-head { margin-bottom: 20px; }
+
+.pillars-title {
+  font-size: clamp(22px, 3vw, 28px);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
   color: var(--text);
 }
 
-.cut-head .amt {
-  color: var(--accent);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-
-.cut-tools {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.cut-tools li {
-  font-size: 14px;
-  color: var(--text-secondary);
-  padding: 3px 10px;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  text-decoration: line-through;
-  text-decoration-color: var(--text-muted);
-  text-decoration-thickness: 1.5px;
-}
-
-.cut-note {
-  font-size: 15px;
+.pillars-sub {
+  font-size: 16px;
   color: var(--text-secondary);
   margin-top: 4px;
 }
 
-.hero-ask {
-  font-size: clamp(26px, 4vw, 34px);
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  line-height: 1.15;
-  color: var(--text);
-  margin-top: 32px;
-}
-
-/* The leaks it found */
-.leaks { margin-top: 40px; }
-
-.leaks-title {
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.015em;
-  line-height: 1.35;
-  color: var(--text);
-  margin-bottom: 18px;
-}
-
-.leak-grid {
+.pillar-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
 }
 
-.leak {
+.pillar {
+  --c: var(--accent);
+  position: relative;
   display: flex;
   flex-direction: column;
-  background: var(--surface);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--c) 7%, transparent), transparent 55%),
+    var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 22px 20px 18px;
+  border-radius: 16px;
+  padding: 22px 22px 20px;
+  overflow: hidden;
 }
 
-/* Line the three "Now:" rows up across the cards */
+.pillar::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: var(--c);
+}
+
+.p-cost  { --c: var(--c-cost); }
+.p-cash  { --c: var(--c-cash); }
+.p-truth { --c: var(--c-truth); }
+.p-time  { --c: var(--c-time); }
+
 @supports (grid-template-rows: subgrid) {
-  .leak-grid { grid-template-rows: auto auto auto; }
-  .leak { display: grid; grid-template-rows: subgrid; grid-row: span 3; row-gap: 0; }
-  .leak .leak-now { margin-top: 0; }
+  .pillar { display: grid; grid-template-rows: subgrid; grid-row: span 4; row-gap: 0; }
 }
 
-.leak-fig {
-  font-size: 40px;
+.pillar-tag {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--c);
+  margin-bottom: 16px;
+}
+
+.pillar-tag span {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.pillar-fig {
+  font-size: 44px;
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
   line-height: 1;
-  color: var(--text);
+  color: var(--c);
   font-variant-numeric: tabular-nums;
 }
 
-.leak-fig span {
+.pillar-fig span {
   display: block;
   margin-top: 8px;
   font-size: 15px;
   font-weight: 600;
   letter-spacing: 0;
-  color: var(--text-secondary);
+  color: var(--text);
 }
 
-.leak-body {
+.pillar-body {
   font-size: 15px;
   line-height: 1.55;
   color: var(--text-secondary);
   margin: 14px 0 18px;
 }
 
-.leak-now {
-  margin-top: auto;
+.pillar-body .amt { color: var(--c); font-weight: 700; }
+.pillar-body .cut-tools { margin-top: 10px; }
+
+.pillar-now {
+  align-self: start;
   padding-top: 14px;
   border-top: 1px solid var(--border);
   font-size: 14px;
@@ -375,18 +382,44 @@ body {
   color: var(--text);
 }
 
-.leak-now b { color: var(--accent); font-weight: 700; }
+.pillar-now b { color: var(--c); font-weight: 700; }
 
-.hero-turn {
-  font-size: clamp(28px, 4.4vw, 40px);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.12;
-  color: var(--text);
-  margin: 80px 0 20px;
+/* The turn: from our story to theirs */
+.turn { margin: 88px 0 24px; }
+
+.turn-kicker {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 6px;
 }
 
-.hero-turn em { font-style: normal; color: var(--accent); }
+.turn-title {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  color: var(--text);
+}
+
+.cut-tools {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cut-tools li {
+  font-size: 13px;
+  color: var(--text-secondary);
+  padding: 2px 9px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  text-decoration: line-through;
+  text-decoration-color: var(--text-muted);
+  text-decoration-thickness: 1.5px;
+}
 
 .hero-sub {
   font-size: 17px;
@@ -1138,15 +1171,15 @@ body {
 
 /* ─── Responsive ─── */
 @media (max-width: 680px) {
-  .leak-grid { grid-template-columns: 1fr; }
-  .leaks { margin-top: 32px; }
-  .hero-turn { margin-top: 56px; }
+  .pillar-grid { grid-template-columns: 1fr; }
+  .pillars { margin-top: 48px; }
+  .turn { margin-top: 64px; }
+  .pillar-fig { font-size: 38px; }
 }
 
 @media (max-width: 600px) {
   .hero-stat { padding-left: 14px; }
   .hero-stat-num { font-size: 22px; }
-  .cut-row { padding: 16px 18px; }
   .select-grid { grid-template-columns: 1fr 1fr; }
   .quiz-nav { flex-wrap: wrap; }
   .quiz-nav .btn-primary { max-width: none; flex: 1; }
@@ -1192,43 +1225,50 @@ body {
       <span class="hero-badge"><span class="dot"></span>Yes, another free report. Stick with us.</span>
     </div>
     <h1 class="hero-title animate-in stagger-2" id="heroHeadline">We&rsquo;re cutting <span class="hl">$100K</span> in software subscriptions.</h1>
+    <p class="hero-thesis animate-in stagger-2">Your software tells you what happened yesterday. <strong>We tell you what to do tomorrow.</strong></p>
 
-    <div class="cut-ledger animate-in stagger-3">
-      <div class="cut-row">
-        <p class="cut-head"><span class="amt">$75K</span> gone this year:</p>
-        <ul class="cut-tools">
-          <li>JivoChat</li><li>Invoca</li><li>HubSpot</li><li>Broadly</li><li>Boast</li><li>DocuSign</li>
-        </ul>
+    <div class="pillars animate-in stagger-3">
+      <div class="pillars-head">
+        <h2 class="pillars-title">What it did for our own business</h2>
+        <p class="pillars-sub">More than cut costs. It showed us the leaks.</p>
       </div>
-      <div class="cut-row">
-        <p class="cut-head">Salesforce is the other <span class="amt">$25K</span>.</p>
-        <p class="cut-note">It goes when our contract ends next year.</p>
+      <div class="pillar-grid">
+        <article class="pillar p-cost">
+          <p class="pillar-tag"><span>01</span>Cut the software</p>
+          <p class="pillar-fig">$100K <span>in software subscriptions</span></p>
+          <div class="pillar-body">
+            <p><span class="amt">$75K</span> gone this year:</p>
+            <ul class="cut-tools">
+              <li>JivoChat</li><li>Invoca</li><li>HubSpot</li><li>Broadly</li><li>Boast</li><li>DocuSign</li>
+            </ul>
+          </div>
+          <p class="pillar-now">Salesforce is the other <b>$25K</b>. It goes when our contract ends next year.</p>
+        </article>
+        <article class="pillar p-cash">
+          <p class="pillar-tag"><span>02</span>Found the money</p>
+          <p class="pillar-fig">$80K <span>disappeared</span></p>
+          <div class="pillar-body"><p>Service jobs got done, and nobody asked for the money. No single system could see it.</p></div>
+          <p class="pillar-now"><b>Now:</b> a Collect payment list. Every unpaid job, who owns it, one button to collect.</p>
+        </article>
+        <article class="pillar p-truth">
+          <p class="pillar-tag"><span>03</span>Fixed the numbers</p>
+          <p class="pillar-fig">2 <span>close rates</span></p>
+          <div class="pillar-body"><p>Two of our own reports gave us two different close rates, and both looked official.</p></div>
+          <p class="pillar-now"><b>Now:</b> one definition for every number, used on every screen.</p>
+        </article>
+        <article class="pillar p-time">
+          <p class="pillar-tag"><span>04</span>Caught who&rsquo;s waiting</p>
+          <p class="pillar-fig">33 <span>customers</span></p>
+          <div class="pillar-body"><p>were waiting on a reply from us the first morning it ran. 25 of them for three days or more.</p></div>
+          <p class="pillar-now"><b>Now:</b> every morning it tells us who's waiting, oldest first.</p>
+        </article>
       </div>
     </div>
-    <p class="hero-ask animate-in stagger-3">What can we save you?</p>
 
-    <div class="leaks animate-in stagger-3">
-      <h2 class="leaks-title">Our new system did more than cut costs. It showed us the leaks:</h2>
-      <div class="leak-grid">
-        <article class="leak">
-          <p class="leak-fig">$80K <span>disappeared</span></p>
-          <p class="leak-body">Service jobs got done, and nobody asked for the money. No single system could see it.</p>
-          <p class="leak-now"><b>Now:</b> a Collect payment list. Every unpaid job, who owns it, one button to collect.</p>
-        </article>
-        <article class="leak">
-          <p class="leak-fig">2 <span>close rates</span></p>
-          <p class="leak-body">Two of our own reports gave us two different close rates, and both looked official.</p>
-          <p class="leak-now"><b>Now:</b> one definition for every number, used on every screen.</p>
-        </article>
-        <article class="leak">
-          <p class="leak-fig">33 <span>customers</span></p>
-          <p class="leak-body">were waiting on a reply from us the first morning it ran. 25 of them for three days or more.</p>
-          <p class="leak-now"><b>Now:</b> every morning it tells us who's waiting, oldest first.</p>
-        </article>
-      </div>
+    <div class="turn animate-in stagger-3">
+      <p class="turn-kicker">We found ours. Let&rsquo;s find yours.</p>
+      <h2 class="turn-title">What can we save you?</h2>
     </div>
-
-    <h2 class="hero-turn animate-in stagger-3">We found ours. <em>Let's find yours.</em></h2>
     <div class="hero-sub animate-in stagger-3" id="heroSub">
       <p class="hero-lead">When was the last time you sat down with another owner, someone who knows how a business like yours really runs, and got straight feedback on yours?</p>
       <p>Probably never. Your accountant sees the books. Your crew sees the jobs. Nobody sees the whole thing. <strong>This does.</strong> 28 questions, built from 20 years of experience. <strong>Five minutes from now, you&rsquo;ll know where your business is leaking money and what to fix first.</strong></p>

@@ -1077,6 +1077,11 @@ body {
   background: var(--accent);
 }
 
+@media (max-width: 560px) {
+  .hero-badge { border-radius: 16px; align-items: flex-start; line-height: 1.45; }
+  .hero-badge .dot { margin-top: 6px; flex: none; }
+}
+
 /* ─── Hero Trust Row (under CTA) ─── */
 .hero-trust {
   display: flex;
@@ -1445,7 +1450,7 @@ body {
   <div class="container">
     <div class="hero-kicker animate-in stagger-1">
       <span class="hero-eyebrow">The free business check</span>
-      <span class="hero-badge"><span class="dot"></span>Yes, another free report. Stick with us.</span>
+      <span class="hero-badge"><span class="dot"></span><span>Yes, another free report. <strong>Except this one skips the 40-page PDF and reads itself to you in the truck.</strong></span></span>
     </div>
     <h1 class="hero-title animate-in stagger-2" id="heroHeadline">We&rsquo;re cutting <span class="hl">$100K</span> in software subscriptions.</h1>
     <p class="hero-thesis animate-in stagger-2">Your software tells you what happened yesterday. <strong>We tell you what to do tomorrow.</strong></p>

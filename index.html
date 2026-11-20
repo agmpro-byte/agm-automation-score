@@ -1437,7 +1437,7 @@ body {
 <!-- Progress -->
 <div class="progress-wrap" id="progressWrap">
   <div class="progress-info">
-    <span class="progress-step" id="progressStep">Question 1 of 28</span>
+    <span class="progress-step" id="progressStep">Question 1 of 32</span>
     <span class="progress-pct" id="progressPct">0%</span>
   </div>
   <div class="progress-bar-track">
@@ -1509,7 +1509,7 @@ body {
     </div>
     <div class="hero-sub animate-in stagger-3" id="heroSub">
       <p class="hero-lead">When was the last time you sat down with another owner, someone who knows how a business like yours really runs, and got straight feedback on yours?</p>
-      <p>Probably never. Your accountant sees the books. Your crew sees the jobs. Nobody sees the whole thing. <strong>This does.</strong> 28 questions, built from 20 years of experience. <strong>Five minutes from now, you&rsquo;ll know where your business is leaking money and what to fix first.</strong></p>
+      <p>Probably never. Your accountant sees the books. Your crew sees the jobs. Nobody sees the whole thing. <strong>This does.</strong> 32 questions, built from 20 years of experience. <strong>Five minutes from now, you&rsquo;ll know where your business is leaking money and what to fix first.</strong></p>
       <p>You get the one thing costing you the most, what to do about it this week, and an audio version for the truck. No 40-page PDF. Nobody calling you at dinner.</p>
       <p><strong>If you can&rsquo;t find five minutes for that, you&rsquo;re probably not a fit for us anyway.</strong></p>
     </div>
@@ -1519,7 +1519,7 @@ body {
         <span class="hero-stat-label">To complete</span>
       </div>
       <div class="hero-stat">
-        <span class="hero-stat-num" id="heroQuestionCount">28</span>
+        <span class="hero-stat-num" id="heroQuestionCount">32</span>
         <span class="hero-stat-label">Questions</span>
       </div>
       <div class="hero-stat">
@@ -1713,7 +1713,11 @@ body {
   "questions":[
    {"id":"leads_per_month","type":"number","q":"How many new leads come in each month?","help":"Calls, forms, referrals, everything.","min":0,"feeds":"Lead to a person"},
    {"id":"response_time","type":"select","q":"When a new lead comes in, how long until a real person gets back to them?","help":"Be honest. The lead already knows.","options":["Under 5 minutes","Under an hour","Same day","Next day","2+ days"],"feeds":"Lead to a person (scored)"},
-   {"id":"after_hours","type":"select","q":"What happens to a call or form that comes in after hours?","help":"Nights, weekends, and that one Saturday you swore you’d take off.","options":["Someone answers it that night","An automatic text goes out right away","An answering service takes a message","It goes to voicemail","It waits until morning"],"feeds":"Lead to a person (scored)"}
+   {"id":"after_hours","type":"select","q":"What happens to a call or form that comes in after hours?","help":"Nights, weekends, and that one Saturday you swore you’d take off.","options":["Someone answers it that night","An automatic text goes out right away","An answering service takes a message","It goes to voicemail","It waits until morning"],"feeds":"Lead to a person (scored)"},
+   {"id":"live_answer","type":"select","q":"During business hours, how many calls does a real person answer live?","help":"Picked up while it rings, not called back later.","options":["Nearly all","Most","About half","Less than half","I don’t know"],"feeds":"Lead to a person (scored)"},
+   {"id":"profile_hours_match","type":"select","q":"Do the hours on your Google Business Profile match the hours someone actually answers the phone?","help":"On Google’s pay-per-lead ads, a call you miss in those hours can be billed as a lead.","options":["Yes","No","Not sure","We don’t have a Google profile"],"feeds":"Lead to a person (scored)"},
+   {"id":"availability_answer","type":"select","q":"If someone calls and asks “can you come out Thursday?”, can whoever answers give a straight answer on the spot?","help":"Google Maps’ AI now makes that call to check availability for homeowners.","options":["Yes, they can see the schedule","They take a message","Only the owner knows","It goes to voicemail"],"feeds":"Lead to a person (scored)"},
+   {"id":"google_ppl_ads","type":"select","q":"Do you run Google’s pay-per-lead ads (Local Services Ads)?","help":"The ads at the very top of Google marked “Google Guaranteed” or “Google Screened”.","options":["Yes","No","Not sure"],"feeds":"The report (asked, not scored)"}
   ]},
  {"section":"Quote follow-up","intro":"You sent the quote. They went quiet. Now what?",
   "questions":[
